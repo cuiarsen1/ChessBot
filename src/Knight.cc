@@ -6,7 +6,7 @@ Knight::Knight(int row, int col, Chessboard *component):
 //basically places a knight onto the chessboard
 char Knight::pieceAt(int row, int col) {
     char currentPiece = component->pieceAt(row, col);
-        if (currentPiece == ' '){  
+    if (currentPiece == ' ' && x == row && y == col){  
             return 'K';
     }
     return currentPiece;

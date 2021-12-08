@@ -47,6 +47,11 @@ int main(){
             std::cin >> row >> col;
             s.picture() = new King(row, col, s.picture());
         }
+        else if (command == "Pawn") {
+            int row, col;
+            std::cin >> row >> col;
+            s.picture() = new Pawn(row, col, s.picture());
+        }
     }
 
 

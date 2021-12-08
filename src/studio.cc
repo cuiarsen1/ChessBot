@@ -4,19 +4,18 @@
 
 void Studio::render() {
   out << '+';
-  for (int j = 0; j < cols; ++j) out << '-';
+  for (int j = 0; j < cols; ++j) out << j;
   out << '+' << std::endl;
   for (int i = 0; i < rows; ++i) {
-    out << '|';
+    out << i;
     for (int j = 0; j < cols; ++j) {
       out << picture()->pieceAt(i, j);
     }
-    out << '|' << std::endl;
+    out << i << std::endl;
   }
   out << '+';
-  for (int j = 0; j < cols; ++j) out << '-';
+  for (int j = 0; j < cols; ++j) out << j;
   out << '+' << std::endl;
-  ++ticks;
 }
 
 

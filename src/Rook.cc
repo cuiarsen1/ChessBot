@@ -6,7 +6,7 @@ Rook::Rook(int row, int col, Chessboard *component):
 //basically places a knight onto the chessboard
 char Rook::pieceAt(int row, int col) {
     char currentPiece = component->pieceAt(row, col);
-        if (currentPiece == ' '){  
+    if (currentPiece == ' ' && x == row && y == col){  
             return 'R';
     }
     return currentPiece;

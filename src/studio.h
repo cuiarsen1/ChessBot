@@ -4,7 +4,7 @@
 class Chessboard;
 
 class Studio {
-  int rows = 8, cols = 8, ticks = 0;
+  int rows = 8, cols = 8;
   std::ostream &out = std::cout;
 
   Chessboard *thePicture;

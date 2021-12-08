@@ -6,7 +6,7 @@ Bishop::Bishop(int row, int col, Chessboard *component):
 //basically places a bishop onto the chessboard
 char Bishop::pieceAt(int row, int col) {
     char currentPiece = component->pieceAt(row, col);
-        if (currentPiece == ' '){  
+    if (currentPiece == ' ' && x == row && y == col){  
             return 'B';
     }
     return currentPiece;
