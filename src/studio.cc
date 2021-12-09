@@ -4,9 +4,13 @@
 
 void Studio::render() {
   out << '+';
-  for (int j = 0; j < cols; ++j) out << j;
+  char c;
+  for (int j = 0; j < cols; ++j) {
+    c = 'a' + j;
+    out << c;
+  }
   out << '+' << std::endl;
-  for (int i = 0; i < rows; ++i) {
+  for (int i = 1; i <= rows; ++i) {
     out << i;
     for (int j = 0; j < cols; ++j) {
       out << picture()->pieceAt(i, j);
@@ -14,7 +18,10 @@ void Studio::render() {
     out << i << std::endl;
   }
   out << '+';
-  for (int j = 0; j < cols; ++j) out << j;
+  for (int j = 0; j < cols; ++j) {
+    c = 'a' + j;
+    out << c;
+  } 
   out << '+' << std::endl;
 }
 

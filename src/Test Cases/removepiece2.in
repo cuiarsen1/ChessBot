@@ -1,6 +1,7 @@
 setup
 + K e1
-render
-+ k e3
+- e1
++ k e1
+- e2
 render
 done

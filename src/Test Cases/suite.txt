@@ -1,1 +1,7 @@
 addking
+invalidking
+removepiece
+removepiece2
+replaceking
+replacesame
+removepiece3
