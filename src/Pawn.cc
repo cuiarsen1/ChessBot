@@ -6,7 +6,7 @@ Pawn::Pawn(int row, int col, char colour, Chessboard *component):
 //basically places a pawn onto the chessboard
 char Pawn::pieceAt(int row, int col) {
     char currentPiece = component->pieceAt(row, col);
-    if (currentPiece == ' ' && x == row && y == col){  
+    if (x == row && y == col){  
         if (colour == 'w'){     //if piece is white
             return 'P';
         }

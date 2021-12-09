@@ -6,7 +6,7 @@ King::King(int row, int col, char colour, Chessboard *component):
 //basically places a king onto the chessboard
 char King::pieceAt(int row, int col) {
     char currentPiece = component->pieceAt(row, col);
-    if (currentPiece == ' ' && x == row && y == col){ 
+    if (x == row && y == col){ 
         if (colour == 'w'){     //if piece is white
             return 'K';
         }

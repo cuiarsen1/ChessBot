@@ -6,7 +6,7 @@ Queen::Queen(int row, int col, char colour, Chessboard *component):
 //basically places a Queen onto the chessboard
 char Queen::pieceAt(int row, int col) {
     char currentPiece = component->pieceAt(row, col);
-    if (currentPiece == ' ' && x == row && y == col){  
+    if (x == row && y == col){  
         if (colour == 'w'){     //if piece is white
             return 'Q';
         }
