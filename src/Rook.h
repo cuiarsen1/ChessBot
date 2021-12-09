@@ -5,8 +5,9 @@
 class Rook: public Piece {
     int x, y;
     int val;
+    char colour;
 public:
-    Rook(int row, int col, Chessboard *component);
+    Rook(int row, int col, char colour, Chessboard *component);
     char pieceAt(int row, int col) override;
 };
 

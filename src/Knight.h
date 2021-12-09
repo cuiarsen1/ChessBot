@@ -5,8 +5,9 @@
 class Knight: public Piece {
     int x, y;
     int val;
+    char colour;
 public:
-    Knight(int row, int col, Chessboard *component);
+    Knight(int row, int col, char colour, Chessboard *component);
     char pieceAt(int row, int col) override;
 };
 
