@@ -8,6 +8,7 @@
 #include "Pawn.h"
 #include "Queen.h"
 #include "King.h"
+#include "Empty.h"
 
 using namespace std;
 
@@ -71,7 +72,7 @@ int main(){
                     char pos1;
                     int pos2;
                     std::cin >> pos1 >> pos2;
-                    s.picture() = new Square;   //questionable
+                    s.picture() = new Empty(pos2, pos1-'a',s.picture());   //questionable
                 }
                 else if (command == "="){
                     char colour;

@@ -10,12 +10,12 @@ void Studio::render() {
     out << c;
   }
   out << '+' << std::endl;
-  for (int i = 1; i <= rows; ++i) {
-    out << i;
+  for (int i = 0; i < rows; ++i) {
+    out << i+1;
     for (int j = 0; j < cols; ++j) {
       out << picture()->pieceAt(i, j);
     }
-    out << i << std::endl;
+    out << i+1 << std::endl;
   }
   out << '+';
   for (int j = 0; j < cols; ++j) {
