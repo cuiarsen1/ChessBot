@@ -1,0 +1,74 @@
+#!/bin/bash
+
+exitCode=0
+
+if ! [ -r "${1}" ]; then
+	echo "${1} is not readable" 1>&2
+	exit 1
+fi
+
+if [ ${#} -ne 2 ]; then
+	echo "Invalid number of command-line arguments" 1>&2
+	exit 1
+fi
+
+if ! [ -x "${2}" ]; then
+	echo "${2} is not executable" 1>&2
+	exit 1
+fi
+
+for suite in $(<"${1}"); do
+
+	if [ -e "${suite}.out" ]; then
+		if ! [ -w "${suite}.out" ]; then
+			echo "${suite}.out is not writable" 1>&2
+			exitCode=1
+			continue
+		fi
+	fi
+
+	argExist=0
+	argRead=0
+	inExist=0
+	inRead=0
+
+	if [ -e "${suite}.args" ]; then
+		argExist=1
+		if [ -r "${suite}.args" ]; then
+			argRead=1
+		fi
+	fi
+
+	if [ -e "${suite}.in" ]; then
+		inExist=1
+		if [ -r "${suite}.in" ]; then
+			inRead=1
+		fi
+	fi
+
+
+	if [ ${argRead} -eq 1 -a ${inRead} -eq 1 ]; then
+		${2} $(cat "${suite}.args") < "${suite}.in" > "${suite}.out"
+	elif [ ${argRead} -eq 1 ]; then
+		${2} $(cat "${suite}.args") > "${suite}.out"
+	elif [ ${inRead} -eq 1 ]; then
+		${2} < "${suite}.in" > "${suite}.out"
+	elif [ ${argExist} -eq 1 -a ${inExist} -eq 0 ]; then
+		echo "${suite}.args is not readable" 1>&2
+		exitCode=1
+		continue
+	elif [ ${argExist} -eq 0 -a ${inExist} -eq 1 ]; then
+		echo "${suite}.in is not readable" 1>&2
+        	exitCode=1
+        	continue
+	elif [ ${argExist} -eq 1 -a ${inExist} -eq 1 ]; then
+		echo "${suite}.args is not readable" 1>&2
+		echo "${suite}.in is not readable" 1>&2
+		exitCode=1
+		continue
+	else
+		${2} > "${suite}.out"
+	fi
+
+done
+exit ${exitCode}
