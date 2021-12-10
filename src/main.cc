@@ -60,7 +60,8 @@ int main() {
     string command;
     bool done = false;
 
-    cin >> command;
+    char turn = 'w';
+
     while (cin >> command) {
         if (command == "setup"){
             done = false;
@@ -116,11 +117,14 @@ int main() {
                 }
                 else if (command == "="){
                     char colour;
-                    if (colour == 'w'){         //white's turn 
-                        //to be implemented
+                    cin >> colour;
+                    if (colour == 'w'){         //white's turn
+                        cout << "White's Turn" << endl;
+                        turn = 'w';
                     }
-                    else if (colour == 'b'){         //black's turn 
-                        //to be implemented
+                    else if (colour == 'b'){         //black's turn
+                        cout << "Black's Turn" << endl;
+                        turn = 'b';
                     }
                 }
                 else if (command == "done"){
@@ -135,53 +139,50 @@ int main() {
                     s.render();
                 }
             }
-        }
-        /*else if (command == "move"){
+        } else if (command == "move"){
             char pos1, endPos1;
             int pos2, endPos2;
             std::cin >> pos1 >> pos2 >> endPos1 >> endPos2;
             char piece = s.picture()->pieceAt(pos2, pos1-'a'+1);
-            if (piece == 'R'){
-                s.picture() = new Rook(pos2, pos1-'a','w', s.picture());
+
+            if (isupper(piece) != 0 && turn == 'w') {
+                if (piece == 'R') {
+                    s.picture() = new Rook(pos2, pos1-'a','w', s.picture());
+                } else if (piece == 'N'){
+                    s.picture() = new Knight(pos2, pos1-'a','w', s.picture());
+                } else if (piece == 'B'){
+                    s.picture() = new Bishop(pos2, pos1-'a','w', s.picture());
+                } else if (piece == 'Q'){
+                    s.picture() = new Queen(pos2, pos1-'a','w', s.picture());
+                } else if (piece == 'K'){
+                    s.picture() = new King(pos2, pos1-'a','w', s.picture());
+                } else if (piece == 'P'){
+                    s.picture() = new Pawn(pos2, pos1-'a','w', s.picture());
+                }
+            } else if (isupper(piece) == 0 && turn == 'b') {
+                if (piece == 'r'){
+                    s.picture() = new Rook(pos2, pos1-'a','b', s.picture());
+                } else if (piece == 'n'){
+                    s.picture() = new Knight(pos2, pos1-'a','b', s.picture());
+                } else if (piece == 'b'){
+                    Bishop* b = new Bishop(pos2, pos1-'a'+1,'b', s.picture());
+                    if (b->checkValidMove(pos2, pos1-'a'+1, pos2, pos1-'a'+1)){
+                        s.picture() = new Bishop(pos2, pos1-'a','b', s.picture());
+                        s.picture() = new Empty(pos2, pos1-'a', s.picture());
+                    }  
+                } else if (piece == 'q'){
+                    s.picture() = new Queen(pos2, pos1-'a','b', s.picture());
+                } else if (piece == 'k'){
+                    s.picture() = new King(pos2, pos1-'a','b', s.picture());
+                } else if (piece == 'p'){
+                    s.picture() = new Pawn(pos2, pos1-'a','b', s.picture());
+                }
+            } else if (turn == 'w') {
+                cout << "Currently white's turn, cannot move black piece" << endl;
+            } else {
+                cout << "Currently black's turn, cannot move white piece" << endl;
             }
-            else if (piece == 'r'){
-                s.picture() = new Rook(pos2, pos1-'a','b', s.picture());
-            }
-            else if (piece == 'N'){
-                s.picture() = new Knight(pos2, pos1-'a','w', s.picture());
-            }
-            else if (piece == 'n'){
-                s.picture() = new Knight(pos2, pos1-'a','b', s.picture());
-            }
-            else if (piece == 'B'){
-                s.picture() = new Bishop(pos2, pos1-'a','w', s.picture());
-            }
-            else if (piece == 'b'){
-                Bishop* b = new Bishop(pos2, pos1-'a','b', s.picture());
-                if (b->checkValidMove(pos2, pos1-'a', pos2, pos1-'a')){
-                    s.picture() = new Bishop(pos2, pos1-'a','b', s.picture());
-                    s.picture() = new Empty(pos2, pos1-'a', s.picture());
-                }  
-            }
-            else if (piece == 'Q'){
-                s.picture() = new Queen(pos2, pos1-'a','w', s.picture());
-            }
-            else if (piece == 'q'){
-                s.picture() = new Queen(pos2, pos1-'a','b', s.picture());
-            }
-            else if (piece == 'K'){
-                s.picture() = new King(pos2, pos1-'a','w', s.picture());
-            }
-            else if (piece == 'k'){
-                s.picture() = new King(pos2, pos1-'a','b', s.picture());
-            }
-            else if (piece == 'P'){
-                s.picture() = new Pawn(pos2, pos1-'a','w', s.picture());
-            }
-            else if (piece == 'p'){
-                s.picture() = new Pawn(pos2, pos1-'a','b', s.picture());
-            }
-        }*/
+        }
     }
 }
 

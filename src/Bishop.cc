@@ -16,8 +16,8 @@ char Bishop::pieceAt(int row, int col) {
     }
     return currentPiece;
 }
-char Bishop::moveTo(int row, int col){
+/*char Bishop::moveTo(int row, int col){
     if (checkValidMove(x,y,row,col)){
         
     }
-}
+}*/

@@ -5,7 +5,7 @@ void Studio::render() {
   out << '+';
   char c;
   for (int j = 1; j <= cols; ++j) {
-    c = 'a' + j;
+    c = 'a' + j - 1;
     out << c;
   }
   out << std::endl;
