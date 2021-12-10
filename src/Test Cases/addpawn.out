@@ -1,5 +1,5 @@
 +abcdefgh
-1        
+1    K   
 2        
 3    k   
 4        
@@ -8,14 +8,13 @@
 7        
 8        
 
-setup mode is invalid
 +abcdefgh
-1        
-2K       
+1    K   
+2        
 3    k   
 4        
-5        
-6        
+5    p   
+6    P   
 7        
 8        
 

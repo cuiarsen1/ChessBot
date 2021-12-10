@@ -12,7 +12,7 @@
 
 using namespace std;
 
-bool verify(Studio s) {
+bool verify(Studio &s) {
     bool valid = true;
     bool wking = false;
     bool bking = false;
@@ -44,27 +44,33 @@ bool verify(Studio s) {
         }
     }
 
-    return valid;
+    if (wking && bking) {
+        return valid;
+    }
+
+    return false;
 }
 
 int main() {
+    
     Chessboard *board = new Square;
-
+    
     Studio s{board};
     
-    std::string command;
+    string command;
     bool done = false;
 
-    while (std::cin >> command) {
+    cin >> command;
+    while (cin >> command) {
         if (command == "setup"){
             done = false;
             while (!done){
-                std::cin >> command;
+                cin >> command;
                 if (command == "+"){
                     char piece;
                     char pos1;
                     int pos2;
-                    std::cin >> piece >> pos1 >> pos2;
+                    cin >> piece >> pos1 >> pos2;
                     if (piece == 'R'){
                         s.picture() = new Rook(pos2, pos1-'a'+1,'w', s.picture());
                     }
@@ -105,7 +111,7 @@ int main() {
                 else if (command == "-"){
                     char pos1;
                     int pos2;
-                    std::cin >> pos1 >> pos2;
+                    cin >> pos1 >> pos2;
                     s.picture() = new Empty(pos2, pos1-'a'+1,s.picture());   //questionable
                 }
                 else if (command == "="){
@@ -119,7 +125,7 @@ int main() {
                 }
                 else if (command == "done"){
                     if (verify(s) == true) {
-                        done = true; 
+                        done = true;
                         cout << "setup mode is complete" << endl;
                     } else {
                         cout << "setup mode is invalid" << endl;
@@ -130,6 +136,52 @@ int main() {
                 }
             }
         }
+        /*else if (command == "move"){
+            char pos1, endPos1;
+            int pos2, endPos2;
+            std::cin >> pos1 >> pos2 >> endPos1 >> endPos2;
+            char piece = s.picture()->pieceAt(pos2, pos1-'a'+1);
+            if (piece == 'R'){
+                s.picture() = new Rook(pos2, pos1-'a','w', s.picture());
+            }
+            else if (piece == 'r'){
+                s.picture() = new Rook(pos2, pos1-'a','b', s.picture());
+            }
+            else if (piece == 'N'){
+                s.picture() = new Knight(pos2, pos1-'a','w', s.picture());
+            }
+            else if (piece == 'n'){
+                s.picture() = new Knight(pos2, pos1-'a','b', s.picture());
+            }
+            else if (piece == 'B'){
+                s.picture() = new Bishop(pos2, pos1-'a','w', s.picture());
+            }
+            else if (piece == 'b'){
+                Bishop* b = new Bishop(pos2, pos1-'a','b', s.picture());
+                if (b->checkValidMove(pos2, pos1-'a', pos2, pos1-'a')){
+                    s.picture() = new Bishop(pos2, pos1-'a','b', s.picture());
+                    s.picture() = new Empty(pos2, pos1-'a', s.picture());
+                }  
+            }
+            else if (piece == 'Q'){
+                s.picture() = new Queen(pos2, pos1-'a','w', s.picture());
+            }
+            else if (piece == 'q'){
+                s.picture() = new Queen(pos2, pos1-'a','b', s.picture());
+            }
+            else if (piece == 'K'){
+                s.picture() = new King(pos2, pos1-'a','w', s.picture());
+            }
+            else if (piece == 'k'){
+                s.picture() = new King(pos2, pos1-'a','b', s.picture());
+            }
+            else if (piece == 'P'){
+                s.picture() = new Pawn(pos2, pos1-'a','w', s.picture());
+            }
+            else if (piece == 'p'){
+                s.picture() = new Pawn(pos2, pos1-'a','b', s.picture());
+            }
+        }*/
     }
 }
 

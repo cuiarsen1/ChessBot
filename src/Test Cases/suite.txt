@@ -1,1 +1,10 @@
 addking
+addpiece
+invalidking
+removepiece
+removepiece2
+removepiece3
+replaceking
+replacesame
+addpawn
+invalidpawn

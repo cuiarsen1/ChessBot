@@ -1,8 +1,8 @@
 setup
 + K e1
-+ k e2
-render
-- e2
 + k e3
+render
++ p e5
++ P e6
 render
 done

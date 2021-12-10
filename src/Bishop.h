@@ -8,7 +8,10 @@ class Bishop: public Piece {
     char colour;
 public:
     Bishop(int row, int col, char colour, Chessboard *component);
+    Bishop(int row, int col);
     char pieceAt(int row, int col) override;
+    char moveTo(int row, int col);
+    bool checkValidMove(int startRow, int startCol, int endRow, int endCol);
 };
 
 #endif
