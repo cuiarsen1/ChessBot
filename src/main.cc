@@ -12,13 +12,47 @@
 
 using namespace std;
 
-int main(){
+bool verify(Studio s) {
+    bool valid = true;
+    bool wking = false;
+    bool bking = false;
+
+    for (int i = 1; i <= 8; i += 1) {
+        for (int j = 1; j <= 8; j += 1) {
+            if (s.picture()->pieceAt(i, j) == 'K') {
+                if (wking == false) {
+                    wking = true;
+                } else {
+                    valid = false;
+                    return valid;
+                }
+                // verify king not in check
+            } else if (s.picture()->pieceAt(i, j) == 'k') {
+                if (bking == false) {
+                    bking = true;
+                } else {
+                    valid = false;
+                    return valid;
+                }
+                // verify king not in check
+            } else if (i == 1 || i == 8) {
+                if (s.picture()->pieceAt(i, j) == 'P' || s.picture()->pieceAt(i, j) == 'p') {
+                    valid = false;
+                    return valid;
+                }
+            }
+        }
+    }
+
+    return valid;
+}
+
+int main() {
     Chessboard *board = new Square;
 
     Studio s{board};
-
+    
     std::string command;
-
     bool done = false;
 
     while (std::cin >> command) {
@@ -32,47 +66,47 @@ int main(){
                     int pos2;
                     std::cin >> piece >> pos1 >> pos2;
                     if (piece == 'R'){
-                        s.picture() = new Rook(pos2, pos1-'a','w', s.picture());
+                        s.picture() = new Rook(pos2, pos1-'a'+1,'w', s.picture());
                     }
                     else if (piece == 'r'){
-                         s.picture() = new Rook(pos2, pos1-'a','b', s.picture());
+                        s.picture() = new Rook(pos2, pos1-'a'+1,'b', s.picture());
                     }
                     else if (piece == 'N'){
-                        s.picture() = new Knight(pos2, pos1-'a','w', s.picture());
+                        s.picture() = new Knight(pos2, pos1-'a'+1,'w', s.picture());
                     }
                     else if (piece == 'n'){
-                         s.picture() = new Knight(pos2, pos1-'a','b', s.picture());
+                        s.picture() = new Knight(pos2, pos1-'a'+1,'b', s.picture());
                     }
                     else if (piece == 'B'){
-                        s.picture() = new Bishop(pos2, pos1-'a','w', s.picture());
+                        s.picture() = new Bishop(pos2, pos1-'a'+1,'w', s.picture());
                     }
                     else if (piece == 'b'){
-                         s.picture() = new Bishop(pos2, pos1-'a','b', s.picture());
+                        s.picture() = new Bishop(pos2, pos1-'a'+1,'b', s.picture());
                     }
                     else if (piece == 'Q'){
-                        s.picture() = new Queen(pos2, pos1-'a','w', s.picture());
+                        s.picture() = new Queen(pos2, pos1-'a'+1,'w', s.picture());
                     }
                     else if (piece == 'q'){
-                         s.picture() = new Queen(pos2, pos1-'a','b', s.picture());
+                        s.picture() = new Queen(pos2, pos1-'a'+1,'b', s.picture());
                     }
                     else if (piece == 'K'){
-                        s.picture() = new King(pos2, pos1-'a','w', s.picture());
+                        s.picture() = new King(pos2, pos1-'a'+1,'w', s.picture());
                     }
                     else if (piece == 'k'){
-                         s.picture() = new King(pos2, pos1-'a','b', s.picture());
+                        s.picture() = new King(pos2, pos1-'a'+1,'b', s.picture());
                     }
                     else if (piece == 'P'){
-                        s.picture() = new Pawn(pos2, pos1-'a','w', s.picture());
+                        s.picture() = new Pawn(pos2, pos1-'a'+1,'w', s.picture());
                     }
                     else if (piece == 'p'){
-                         s.picture() = new Pawn(pos2, pos1-'a','b', s.picture());
+                        s.picture() = new Pawn(pos2, pos1-'a'+1,'b', s.picture());
                     }
                 }
                 else if (command == "-"){
                     char pos1;
                     int pos2;
                     std::cin >> pos1 >> pos2;
-                    s.picture() = new Empty(pos2, pos1-'a',s.picture());   //questionable
+                    s.picture() = new Empty(pos2, pos1-'a'+1,s.picture());   //questionable
                 }
                 else if (command == "="){
                     char colour;
@@ -84,14 +118,12 @@ int main(){
                     }
                 }
                 else if (command == "done"){
-                    //if (verify()){    // need a function to verify every requirement is satisfied
+                    if (verify(s) == true) {
                         done = true; 
                         cout << "setup mode is complete" << endl;
-                    /*}                 
-                    else {
+                    } else {
                         cout << "setup mode is invalid" << endl;
-                    }   */
-
+                    }
                 }
                 else if (command == "render"){
                     s.render();
