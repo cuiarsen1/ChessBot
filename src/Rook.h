@@ -7,8 +7,9 @@ class Rook: public Piece {
     int val;
     char colour;
 public:
-    Rook(int row, int col, char colour, Chessboard *component);
+    Rook(int x, int y, char colour, Chessboard *component);
     char pieceAt(int row, int col) override;
+    //int legalLocation(int targetX, int targetY) override;
 };
 
 #endif

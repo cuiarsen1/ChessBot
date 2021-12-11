@@ -192,6 +192,8 @@ int main() {
             blackWin = false;
 
             while (!gameOver) {
+
+                cout<<"bruh69"<<endl;
                 if (turn == 'w' && !humanW) {
                     // Call correct AI function (1-4) move white piece
                     // If checkmate, gameOver = true, whiteWin = true
@@ -206,19 +208,28 @@ int main() {
                     bool validTurn = false;
 
                     while (!validTurn) {
+                        cin >> command;
                         if (command == "move") {
                             char pos1, endPos1;
                             int pos2, endPos2;
+                            cout<<"bruhfuck"<<endl;
                             cin >> pos1 >> pos2 >> endPos1 >> endPos2;
                             char piece = s.picture()->pieceAt(pos2, pos1-'a'+1);
 
-                            if (isupper(piece) != 0) {
+                            if (isupper(piece)) {
                                 if (piece == 'R'){
                                     s.picture() = new Rook(pos2, pos1-'a','w', s.picture());
                                 } else if (piece == 'N'){
                                     s.picture() = new Knight(pos2, pos1-'a','w', s.picture());
                                 } else if (piece == 'B'){
-                                    s.picture() = new Bishop(pos2, pos1-'a','w', s.picture());
+                                    cout<<"bruh"<<endl;
+                                    Bishop* b = new Bishop(pos2, pos1-'a'+1,'w', s.picture());
+                                    if (b->checkValidMove(pos2, pos1-'a'+1, endPos2, endPos1-'a'+1)){
+                                        cout<<"fuck"<<endl;
+                                        s.picture() = new Bishop(endPos2, endPos1-'a','w', s.picture());
+                                        s.picture() = new Empty(pos2, pos1-'a'+1, s.picture());
+                                    }  
+                                    s.render();
                                 } else if (piece == 'Q'){
                                     s.picture() = new Queen(pos2, pos1-'a','w', s.picture());
                                 } else if (piece == 'K'){
@@ -261,6 +272,7 @@ int main() {
                                         s.picture() = new Bishop(pos2, pos1-'a','b', s.picture());
                                         s.picture() = new Empty(pos2, pos1-'a', s.picture());
                                     }  
+                                    s.render();
                                 } else if (piece == 'q'){
                                     s.picture() = new Queen(pos2, pos1-'a','b', s.picture());
                                 } else if (piece == 'k'){
@@ -293,7 +305,8 @@ int main() {
                 pointsW += 0.5;
                 pointsB += 0.5;
             }
-        } else if (cin.eof()) {
+        }
+         else if (cin.eof()) {
             // Print scores
         }
     }

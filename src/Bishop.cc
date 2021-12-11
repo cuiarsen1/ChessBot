@@ -16,6 +16,52 @@ char Bishop::pieceAt(int row, int col) {
     }
     return currentPiece;
 }
+bool Bishop::checkValidMove(int a, int b, int targetX, int targetY){
+     int diffX = abs(x - targetX), diffY = abs(y - targetY);
+    //Ensure new move isn't to original location
+    if (diffX == 0 && diffY == 0) return 0;
+    //If new location not on current (x, y) location's diagonal, it's invalid
+    if (diffX != diffY) return 0;
+    //Next, check if the path to new location isn't blocked off
+    if (x < targetX && y < targetY){
+        for (int i = 1; i < diffX; i++){
+            int tempX = x + i, tempY = y + i;
+            if (component->pieceAt(tempX, tempY) != ' ') return 0;
+        }
+    }
+    else if (x < targetX && y > targetY){
+        for (int i = 1; i < diffX; i++){
+            int tempX = x + i, tempY = y - i;
+            if (component->pieceAt(tempX, tempY) != ' ') return 0;
+        }
+    }
+    else if (x > targetX && y < targetY){
+        for (int i = 1; i < diffX; i++){
+            int tempX = x - i, tempY = y + i;
+            if (component->pieceAt(tempX, tempY) != ' ') return 0;
+        }
+    }
+    else if (x > targetX && y < targetY){
+        for (int i = 1; i < diffX; i++){
+            int tempX = x - i, tempY = y - i;
+            if (component->pieceAt(tempX, tempY) != ' ') return 0;
+        }
+    }
+    //Finally, the target piece must either be empty or
+    //occupied with enemy piece
+    char targetPiece = component->pieceAt(targetX, targetY);
+    if (targetPiece == ' ') return 1;
+    if (colour == 'w'){
+        //With a white bishop, the enemy pieces must be lowercase
+        if (islower(targetPiece)) return 2;
+        else return 0;
+    }
+    else{
+        //With a black bishop, the enemy pieces must be uppercase
+        if (isupper(targetPiece)) return 2;
+        else return 0;
+    }
+}
 /*char Bishop::moveTo(int row, int col){
     if (checkValidMove(x,y,row,col)){
         
