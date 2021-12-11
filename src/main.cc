@@ -51,6 +51,8 @@ bool verify(Studio &s) {
     return false;
 }
 
+
+
 int main() {
     
     Chessboard *board = new Square;
@@ -118,11 +120,11 @@ int main() {
                 else if (command == "="){
                     char colour;
                     cin >> colour;
-                    if (colour == 'w'){         //white's turn
+                    if (colour == 'w'){     //white's turn
                         cout << "White's Turn" << endl;
                         turn = 'w';
                     }
-                    else if (colour == 'b'){         //black's turn
+                    else if (colour == 'b'){    //black's turn
                         cout << "Black's Turn" << endl;
                         turn = 'b';
                     }
@@ -139,57 +141,163 @@ int main() {
                     s.render();
                 }
             }
-        } else if (command == "move"){
-            char pos1, endPos1;
-            int pos2, endPos2;
-            std::cin >> pos1 >> pos2 >> endPos1 >> endPos2;
-            char piece = s.picture()->pieceAt(pos2, pos1-'a'+1);
+        } else if (command == "game"){
+            string playerW, playerB;
+            cin >> playerW >> playerB;
 
-            if (isupper(piece) != 0 && turn == 'w') {
-                if (piece == 'R') {
-                    s.picture() = new Rook(pos2, pos1-'a','w', s.picture());
-                } else if (piece == 'N'){
-                    s.picture() = new Knight(pos2, pos1-'a','w', s.picture());
-                } else if (piece == 'B'){
-                    s.picture() = new Bishop(pos2, pos1-'a','w', s.picture());
-                } else if (piece == 'Q'){
-                    s.picture() = new Queen(pos2, pos1-'a','w', s.picture());
-                } else if (piece == 'K'){
-                    s.picture() = new King(pos2, pos1-'a','w', s.picture());
-                } else if (piece == 'P'){
-                    s.picture() = new Pawn(pos2, pos1-'a','w', s.picture());
+            bool gameOver = false;
+
+            bool whiteWin = false;
+            bool blackWin = false;
+            double pointsW = 0;
+            double pointsB = 0;
+
+            bool humanW = true;
+            bool humanB = true;
+            bool validW = false;
+            bool validB = false;
+
+            while (!validW || !validB) {
+                if (playerW == "computer1" || playerW == "computer2" || playerW == "computer3" || playerW == "computer4") {
+                    humanW = false;
+                    validW = true;
+                } else if (playerW == "human") {
+                    humanW = true;
+                    validW = true;
                 }
-            } else if (isupper(piece) == 0 && turn == 'b') {
-                if (piece == 'r'){
-                    s.picture() = new Rook(pos2, pos1-'a','b', s.picture());
-                } else if (piece == 'n'){
-                    s.picture() = new Knight(pos2, pos1-'a','b', s.picture());
-                } else if (piece == 'b'){
-                    Bishop* b = new Bishop(pos2, pos1-'a'+1,'b', s.picture());
-                    if (b->checkValidMove(pos2, pos1-'a'+1, pos2, pos1-'a'+1)){
-                        s.picture() = new Bishop(pos2, pos1-'a','b', s.picture());
-                        s.picture() = new Empty(pos2, pos1-'a', s.picture());
-                    }  
-                } else if (piece == 'q'){
-                    s.picture() = new Queen(pos2, pos1-'a','b', s.picture());
-                } else if (piece == 'k'){
-                    s.picture() = new King(pos2, pos1-'a','b', s.picture());
-                } else if (piece == 'p'){
-                    s.picture() = new Pawn(pos2, pos1-'a','b', s.picture());
+
+                if (playerB == "computer1" || playerB == "computer2" || playerB == "computer3" || playerB == "computer4") {
+                    humanB = false;
+                    validB = true;
+                } else if (playerB == "human") {
+                    humanB = true;
+                    validB = true;
                 }
-            } else if (turn == 'w') {
-                cout << "Currently white's turn, cannot move black piece" << endl;
-            } else {
-                cout << "Currently black's turn, cannot move white piece" << endl;
+
+                if (validW && validB) {
+                    break;
+                } else {
+                    cout << "Invalid game setup, try again" << endl;
+                    validW = false;
+                    validB = false;
+                    cin >> command;
+                    if (command == "game") {
+                        cin >> playerW >> playerB;
+                    } else if (cin.eof()) {
+                        // Print scores
+                    }
+                }
             }
+            whiteWin = false;
+            blackWin = false;
+
+            while (!gameOver) {
+                if (turn == 'w' && !humanW) {
+                    // Call correct AI function (1-4) move white piece
+                    // If checkmate, gameOver = true, whiteWin = true
+                    // If there is no possible move to be made, gameOver = true. If in check, blackWin = true
+                    turn = 'b';
+                } else if (turn == 'b' && !humanB) {
+                    // Call correct AI function (1-4) move black piece
+                    // If checkmate, gameOver = true, blackWin = true
+                    // If there is no possible move to be made, gameOver = true. If in check, whiteWin = true
+                    turn = 'w';
+                } else if (turn == 'w' && humanW) {
+                    bool validTurn = false;
+
+                    while (!validTurn) {
+                        if (command == "move") {
+                            char pos1, endPos1;
+                            int pos2, endPos2;
+                            cin >> pos1 >> pos2 >> endPos1 >> endPos2;
+                            char piece = s.picture()->pieceAt(pos2, pos1-'a'+1);
+
+                            if (isupper(piece) != 0) {
+                                if (piece == 'R'){
+                                    s.picture() = new Rook(pos2, pos1-'a','w', s.picture());
+                                } else if (piece == 'N'){
+                                    s.picture() = new Knight(pos2, pos1-'a','w', s.picture());
+                                } else if (piece == 'B'){
+                                    s.picture() = new Bishop(pos2, pos1-'a','w', s.picture());
+                                } else if (piece == 'Q'){
+                                    s.picture() = new Queen(pos2, pos1-'a','w', s.picture());
+                                } else if (piece == 'K'){
+                                    s.picture() = new King(pos2, pos1-'a','w', s.picture());
+                                } else if (piece == 'P'){
+                                    s.picture() = new Pawn(pos2, pos1-'a','w', s.picture());
+                                }
+
+                                validTurn = true;
+                                turn = 'b';
+                            } else {
+                                cout << "Currently white's turn, cannot move black piece" << endl;
+                            }
+                        } else if (command == "resign") {
+                            blackWin = true;
+                            validTurn = true;
+                        }
+                    }
+
+                    // If checkmate, gameOver = true, whiteWin = true
+                    // If there is no possible move to be made, gameOver = true. If in check, blackWin = true
+                } else if (turn == 'b' && humanB) {
+                    bool validTurn = false;
+
+                    while (!validTurn) {
+                        if (command == "move") {
+                            char pos1, endPos1;
+                            int pos2, endPos2;
+                            cin >> pos1 >> pos2 >> endPos1 >> endPos2;
+                            char piece = s.picture()->pieceAt(pos2, pos1-'a'+1);
+
+                            if (isupper(piece) == 0) {
+                                if (piece == 'r'){
+                                    s.picture() = new Rook(pos2, pos1-'a','b', s.picture());
+                                } else if (piece == 'n'){
+                                    s.picture() = new Knight(pos2, pos1-'a','b', s.picture());
+                                } else if (piece == 'b'){
+                                    Bishop* b = new Bishop(pos2, pos1-'a'+1,'b', s.picture());
+                                    if (b->checkValidMove(pos2, pos1-'a'+1, pos2, pos1-'a'+1)){
+                                        s.picture() = new Bishop(pos2, pos1-'a','b', s.picture());
+                                        s.picture() = new Empty(pos2, pos1-'a', s.picture());
+                                    }  
+                                } else if (piece == 'q'){
+                                    s.picture() = new Queen(pos2, pos1-'a','b', s.picture());
+                                } else if (piece == 'k'){
+                                    s.picture() = new King(pos2, pos1-'a','b', s.picture());
+                                } else if (piece == 'p'){
+                                    s.picture() = new Pawn(pos2, pos1-'a','b', s.picture());
+                                }
+
+                                validTurn = true;
+                                turn = 'w';
+                            } else {
+                                cout << "Currently black's turn, cannot move white piece" << endl;
+                            }
+                        } else if (command == "resign") {
+                            whiteWin = true;
+                            validTurn = true;
+                        }
+                    }
+
+                    // If checkmate, gameOver = true, blackWin = true
+                    // If there is no possible move to be made, gameOver = true. If in check, whiteWin = true
+                }
+            }
+            
+            if (whiteWin) {
+                pointsW += 1;
+            } else if (blackWin) {
+                pointsB += 1;
+            } else if (!blackWin && !whiteWin) {
+                pointsW += 0.5;
+                pointsB += 0.5;
+            }
+        } else if (cin.eof()) {
+            // Print scores
         }
     }
 }
-
-
-
-
-
 
     /*
         if (command == "render" ) {
