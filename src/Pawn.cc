@@ -22,7 +22,6 @@ int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
             //If it moves one unit up, it's either straight up or diagonal
             //If diffX = 0, then the new position must be unoccupied by any piece
             //If diffX = 1, then the new position must be occupied by enemy piece
-            //NOTE: ,or en passant
             //Note: with the current pawn being white, then enemy piece is lowercase
             if (diffY == 0) return component->location(targetX, targetY) == NULL;
             else if (diffY == 1){

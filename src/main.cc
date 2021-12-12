@@ -9,6 +9,9 @@
 #include "Queen.h"
 #include "King.h"
 #include "Empty.h"
+#include "Player.h"
+#include "Human.h"
+#include "Computer.h"
 using namespace std;
 
 int main() {
@@ -67,13 +70,30 @@ int main() {
                 }
             }
         } else if (command == "game"){
-            if (!custom){
-                //Use default board
-                s.picture()->init();
-            }
+            if (!custom) s.picture()->init(); //Use default board
             //Otherwise, use the board from setup mode
-            string playerW, playerB;
-            cin >> playerW >> playerB;
+            string playerWText, playerBText;
+            cin >> playerWText >> playerBText;
+            Player *playerW, *playerB;
+            //Ensure both white and black players are valid
+            if ((playerWText != "human" && playerWText != "computer1" &&
+            playerWText != "computer2" && playerWText != "computer3" &&
+            playerWText != "computer4") || (playerBText != "human" &&
+            playerBText != "computer1" && playerBText != "computer2" &&
+            playerBText != "computer3" && playerBText != "computer4")){
+                cout << "Invalid players!\n";
+                continue;
+            }
+            if (playerWText == "computer1") playerW = new Computer('w', 1);
+            else if (playerWText == "computer2") playerW = new Computer('w', 2);
+            else if (playerWText == "computer3") playerW = new Computer('w', 3);
+            else if (playerWText == "computer4") playerW = new Computer('w', 4);
+            else playerW = new Human('w');
+            if (playerBText == "computer1") playerB = new Computer('b', 1);
+            else if (playerBText == "computer2") playerB = new Computer('b', 2);
+            else if (playerBText == "computer3") playerB = new Computer('b', 3);
+            else if (playerBText == "computer4") playerB = new Computer('b', 4);
+            else playerB = new Human('b');
 
             bool gameOver = false;
 
@@ -82,131 +102,32 @@ int main() {
             double pointsW = 0;
             double pointsB = 0;
 
-            bool humanW = true;
-            bool humanB = true;
-            bool validW = false;
-            bool validB = false;
-
-            while (!validW || !validB) {
-                if (playerW == "computer1" || playerW == "computer2" || playerW == "computer3" || playerW == "computer4") {
-                    humanW = false;
-                    validW = true;
-                } else if (playerW == "human") {
-                    humanW = true;
-                    validW = true;
-                }
-
-                if (playerB == "computer1" || playerB == "computer2" || playerB == "computer3" || playerB == "computer4") {
-                    humanB = false;
-                    validB = true;
-                } else if (playerB == "human") {
-                    humanB = true;
-                    validB = true;
-                }
-
-                if (validW && validB) {
-                    break;
-                } else {
-                    cout << "Invalid game setup, try again" << endl;
-                    validW = false;
-                    validB = false;
-                    cin >> command;
-                    if (command == "game") {
-                        cin >> playerW >> playerB;
-                    } else if (cin.eof()) {
-                        // Print scores
-                    }
-                }
-            }
-            whiteWin = false;
-            blackWin = false;
-
             while (!gameOver) {
-
-                if (turn == 'w' && !humanW) {
-                    // Call correct AI function (1-4) move white piece
-                    // If checkmate, gameOver = true, whiteWin = true
-                    // If there is no possible move to be made, gameOver = true. If in check, blackWin = true
+                if (turn == 'w') {
+                    bool result = playerW->turn(s.picture());
+                    if (!result){ //Resign
+                        cout << "DEBUG resigned\n";
+                        gameOver = true;
+                        blackWin = true;
+                        continue;
+                    }
+                    else{
+                        cout << "DEBUG move registered\n";
+                    }
                     turn = 'b';
-                } else if (turn == 'b' && !humanB) {
-                    // Call correct AI function (1-4) move black piece
-                    // If checkmate, gameOver = true, blackWin = true
-                    // If there is no possible move to be made, gameOver = true. If in check, whiteWin = true
+                }
+                else {
+                    bool result = playerB->turn(s.picture());
+                    if (!result){ //Resign
+                        cout << "DEBUG resigned\n";
+                        gameOver = true;
+                        whiteWin = true;
+                        continue;
+                    }
+                    else{
+                        cout << "DEBUG move registered\n";
+                    }
                     turn = 'w';
-                } else if (turn == 'w' && humanW) {
-                    bool validTurn = false;
-
-                    while (!validTurn) {
-                        cin >> command;
-                        if (command == "move") {
-                            char pos1, endPos1;
-                            int pos2, endPos2;
-                            cin >> pos1 >> pos2 >> endPos1 >> endPos2;
-                            int result = s.picture()->move(8-pos2, pos1-'a', 8-endPos2, endPos1-'a');
-                            cout << "DEBUG RESULT " << result << endl;
-                            cout << "DEBUG check move success " << s.picture()->location(8-endPos2, endPos1-'a')->name << endl;
-                            if (result != 0) validTurn = true;
-
-                            //Check
-                            if (s.picture()->check('b')){
-                                cout << "DEBUG check black\n";
-                            }
-                            if (s.picture()->check('w')){
-                                cout << "DEBUG check white\n";
-                            }
-                            if (s.picture()->checkmate('b')){
-                                cout << "DEBUG checkmate black\n";
-                            }
-                            if (s.picture()->checkmate('w')){
-                                cout << "DEBUG checkmate white\n";
-                            }
-                        } else if (command == "resign") {
-                            blackWin = true;
-                            validTurn = true;
-                            gameOver = true;
-                        } else if (command == "render") {
-                            s.render();
-                        }
-                    }
-                    cout << "TURN OVER\n";
-
-                    // If checkmate, gameOver = true, whiteWin = true
-                    // If there is no possible move to be made, gameOver = true. If in check, blackWin = true
-                } else if (turn == 'b' && humanB) {
-                    bool validTurn = false;
-
-                    while (!validTurn) {
-                        cin >> command;
-                        if (command == "move") {
-                            char pos1, endPos1;
-                            int pos2, endPos2;
-                            cin >> pos1 >> pos2 >> endPos1 >> endPos2;
-                            int result = s.picture()->move(8-pos2, pos1-'a', 8-endPos2, endPos1-'a');
-                            if (result != 0) validTurn = true;
-
-                            //Check
-                            if (s.picture()->check('b')){
-                                cout << "DEBUG check black\n";
-                            }
-                            if (s.picture()->check('w')){
-                                cout << "DEBUG check white\n";
-                            }
-                            if (s.picture()->checkmate('b')){
-                                cout << "DEBUG checkmate black\n";
-                            }
-                            if (s.picture()->checkmate('w')){
-                                cout << "DEBUG checkmate white\n";
-                            }
-                        } else if (command == "resign") {
-                            whiteWin = true;
-                            validTurn = true;
-                            gameOver = true;
-                        }
-                    }
-                    cout << "TURN OVER\n";
-
-                    // If checkmate, gameOver = true, blackWin = true
-                    // If there is no possible move to be made, gameOver = true. If in check, whiteWin = true
                 }
             }
             
