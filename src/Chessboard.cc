@@ -34,8 +34,8 @@ Chessboard::Chessboard(){
     newPiece(-1, -1, 'r');
     newPiece(-1, -1, 'b');
     newPiece(-1, -1, 'b'); 
-    newPiece(-1, -1, 'k');
-    newPiece(-1, -1, 'k');
+    newPiece(-1, -1, 'n');
+    newPiece(-1, -1, 'n');
     for (int i = 0; i < 8; i++) newPiece(-1, -1, 'p');
     newPiece(-1, -1, 'K');
     newPiece(-1, -1, 'Q');
@@ -43,8 +43,8 @@ Chessboard::Chessboard(){
     newPiece(-1, -1, 'R');
     newPiece(-1, -1, 'B');
     newPiece(-1, -1, 'B'); 
-    newPiece(-1, -1, 'K');
-    newPiece(-1, -1, 'K');
+    newPiece(-1, -1, 'N');
+    newPiece(-1, -1, 'N');
     for (int i = 0; i < 8; i++) newPiece(-1, -1, 'P');
 }
 
@@ -86,6 +86,8 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
     if (start == NULL) return 0;
     int status = start->checkValidMove(targetX, targetY, this);
     if (status == 0) return 0;
+    //Make sure new move doesn't get our king into check
+    if (check(start->colour)) return 0;
     if (status == 1){
         //Move to unoccupied spot
         start->setPiece(targetX, targetY);

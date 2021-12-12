@@ -187,10 +187,27 @@ int main() {
                             cout << "DEBUG RESULT " << result << endl;
                             cout << "DEBUG check move success " << s.picture()->location(8-endPos2, endPos1-'a')->name << endl;
                             if (result != 0) validTurn = true;
+
+                            //Check
+                            if (s.picture()->check('b')){
+                                cout << "DEBUG check black\n";
+                            }
+                            if (s.picture()->check('w')){
+                                cout << "DEBUG check white\n";
+                            }
+                            if (s.picture()->checkmate('b')){
+                                cout << "DEBUG checkmate black\n";
+                            }
+                            if (s.picture()->checkmate('w')){
+                                cout << "DEBUG checkmate white\n";
+                            }
                         } else if (command == "resign") {
                             blackWin = true;
                             validTurn = true;
                             gameOver = true;
+                        } else if (command == "render") {
+                            s.render();
+                            validTurn = true;
                         }
                     }
                     cout << "TURN OVER\n";
@@ -208,6 +225,20 @@ int main() {
                             cin >> pos1 >> pos2 >> endPos1 >> endPos2;
                             int result = s.picture()->move(8-pos2, pos1-'a', 8-endPos2, endPos1-'a');
                             if (result != 0) validTurn = true;
+
+                            //Check
+                            if (s.picture()->check('b')){
+                                cout << "DEBUG check black\n";
+                            }
+                            if (s.picture()->check('w')){
+                                cout << "DEBUG check white\n";
+                            }
+                            if (s.picture()->checkmate('b')){
+                                cout << "DEBUG checkmate black\n";
+                            }
+                            if (s.picture()->checkmate('w')){
+                                cout << "DEBUG checkmate white\n";
+                            }
                         } else if (command == "resign") {
                             whiteWin = true;
                             validTurn = true;

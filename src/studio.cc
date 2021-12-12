@@ -10,9 +10,9 @@ void Studio::render() {
     out << c;
   }
   out << std::endl;
-  for (int i = 1; i <= rows; ++i) {
-    out << i;
-    for (int j = 1; j <= cols; ++j) {
+  for (int i = 0; i < rows; ++i) {
+    out << i + 1;
+    for (int j = 0; j < cols; ++j) {
       Piece *temp = picture()->location(i, j);
       if (temp == NULL) out << ' ';
       else out << temp->name;
