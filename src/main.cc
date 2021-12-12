@@ -193,7 +193,6 @@ int main() {
 
             while (!gameOver) {
 
-                cout<<"bruh69"<<endl;
                 if (turn == 'w' && !humanW) {
                     // Call correct AI function (1-4) move white piece
                     // If checkmate, gameOver = true, whiteWin = true
@@ -212,7 +211,6 @@ int main() {
                         if (command == "move") {
                             char pos1, endPos1;
                             int pos2, endPos2;
-                            cout<<"bruhfuck"<<endl;
                             cin >> pos1 >> pos2 >> endPos1 >> endPos2;
                             char piece = s.picture()->pieceAt(pos2, pos1-'a'+1);
 
@@ -222,14 +220,13 @@ int main() {
                                 } else if (piece == 'N'){
                                     s.picture() = new Knight(pos2, pos1-'a','w', s.picture());
                                 } else if (piece == 'B'){
-                                    cout<<"bruh"<<endl;
                                     Bishop* b = new Bishop(pos2, pos1-'a'+1,'w', s.picture());
                                     if (b->checkValidMove(pos2, pos1-'a'+1, endPos2, endPos1-'a'+1)){
-                                        cout<<"fuck"<<endl;
                                         s.picture() = new Bishop(endPos2, endPos1-'a','w', s.picture());
                                         s.picture() = new Empty(pos2, pos1-'a'+1, s.picture());
                                     }  
                                     s.render();
+                                    cout << "moved white bishop" << endl;
                                 } else if (piece == 'Q'){
                                     s.picture() = new Queen(pos2, pos1-'a','w', s.picture());
                                 } else if (piece == 'K'){
@@ -240,12 +237,16 @@ int main() {
 
                                 validTurn = true;
                                 turn = 'b';
+                                cout << "Change to black turn " << endl;
+                            } else if (isblank(piece)) {
+                                cout << "No piece located here, try another move" << endl;
                             } else {
                                 cout << "Currently white's turn, cannot move black piece" << endl;
                             }
                         } else if (command == "resign") {
                             blackWin = true;
                             validTurn = true;
+                            gameOver = true;
                         }
                     }
 
@@ -255,13 +256,15 @@ int main() {
                     bool validTurn = false;
 
                     while (!validTurn) {
+                        cin >> command;
                         if (command == "move") {
                             char pos1, endPos1;
                             int pos2, endPos2;
                             cin >> pos1 >> pos2 >> endPos1 >> endPos2;
                             char piece = s.picture()->pieceAt(pos2, pos1-'a'+1);
+                            cout << piece << endl;
 
-                            if (isupper(piece) == 0) {
+                            if (!isupper(piece)) {
                                 if (piece == 'r'){
                                     s.picture() = new Rook(pos2, pos1-'a','b', s.picture());
                                 } else if (piece == 'n'){
@@ -273,6 +276,7 @@ int main() {
                                         s.picture() = new Empty(pos2, pos1-'a', s.picture());
                                     }  
                                     s.render();
+                                    cout << "moved black bishop" << endl;
                                 } else if (piece == 'q'){
                                     s.picture() = new Queen(pos2, pos1-'a','b', s.picture());
                                 } else if (piece == 'k'){
@@ -283,12 +287,15 @@ int main() {
 
                                 validTurn = true;
                                 turn = 'w';
+                            } else if (isblank(piece)) {
+                                cout << "No piece located here, try another move" << endl;
                             } else {
                                 cout << "Currently black's turn, cannot move white piece" << endl;
                             }
                         } else if (command == "resign") {
                             whiteWin = true;
                             validTurn = true;
+                            gameOver = true;
                         }
                     }
 
