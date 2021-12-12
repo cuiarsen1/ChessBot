@@ -1,5 +1,108 @@
 #include <iostream>
 #include "Chessboard.h"
+#include "King.h"
+#include "Queen.h"
+#include "Rook.h"
+#include "Bishop.h"
+#include "Knight.h"
+#include "Pawn.h"
+#include "Piece.h"
+using namespace std;
+
+void Chessboard::newPiece(int x, int y, char name){
+    if (name == 'K') whitePieces.push_back(new King(x, y, name));
+    else if (name == 'k') blackPieces.push_back(new King(x, y, name));
+    else if (name == 'Q') whitePieces.push_back(new Queen(x, y, name));
+    else if (name == 'q') blackPieces.push_back(new Queen(x, y, name));
+    else if (name == 'R') whitePieces.push_back(new Rook(x, y, name));
+    else if (name == 'r') blackPieces.push_back(new Rook(x, y, name));
+    else if (name == 'B') whitePieces.push_back(new Bishop(x, y, name));
+    else if (name == 'b') blackPieces.push_back(new Bishop(x, y, name));
+    else if (name == 'N') whitePieces.push_back(new Knight(x, y, name));
+    else if (name == 'n') blackPieces.push_back(new Knight(x, y, name));
+    else if (name == 'P') whitePieces.push_back(new Pawn(x, y, name));
+    else if (name == 'p') blackPieces.push_back(new Pawn(x, y, name));
+}
+
+Chessboard::Chessboard(){
+    //Black is top, white is bottom
+    //With 16 pieces of each colour, we will store them in each vector separately
+    //Sorted by importance of each piece
+    newPiece(-1, -1, 'k');
+    newPiece(-1, -1, 'q');
+    newPiece(-1, -1, 'r');
+    newPiece(-1, -1, 'r');
+    newPiece(-1, -1, 'b');
+    newPiece(-1, -1, 'b'); 
+    newPiece(-1, -1, 'k');
+    newPiece(-1, -1, 'k');
+    for (int i = 0; i < 8; i++) newPiece(-1, -1, 'p');
+    newPiece(-1, -1, 'K');
+    newPiece(-1, -1, 'Q');
+    newPiece(-1, -1, 'R');
+    newPiece(-1, -1, 'R');
+    newPiece(-1, -1, 'B');
+    newPiece(-1, -1, 'B'); 
+    newPiece(-1, -1, 'K');
+    newPiece(-1, -1, 'K');
+    for (int i = 0; i < 8; i++) newPiece(-1, -1, 'P');
+}
+
+void Chessboard::init(){
+    //If setup mode was never entered, set the pieces to corresponding locations
+    blackPieces[0]->setPiece(0, 4);
+    blackPieces[1]->setPiece(0, 3);
+    blackPieces[2]->setPiece(0, 0);
+    blackPieces[3]->setPiece(0, 7);
+    blackPieces[4]->setPiece(0, 2);
+    blackPieces[5]->setPiece(0, 5);
+    blackPieces[6]->setPiece(0, 1);
+    blackPieces[7]->setPiece(0, 6);
+    for (int i = 8; i < 16; i++) blackPieces[i]->setPiece(1, i - 8);
+    whitePieces[0]->setPiece(7, 4);
+    whitePieces[1]->setPiece(7, 3);
+    whitePieces[2]->setPiece(7, 0);
+    whitePieces[3]->setPiece(7, 7);
+    whitePieces[4]->setPiece(7, 2);
+    whitePieces[5]->setPiece(7, 5);
+    whitePieces[6]->setPiece(7, 1);
+    whitePieces[7]->setPiece(7, 6);
+    for (int i = 8; i < 16; i++) whitePieces[i]->setPiece(6, i - 8);
+}
+
+Piece *Chessboard::location(int x, int y){
+    for (Piece *p: blackPieces){
+        if (p->x == x && p->y == y) return p;
+    }
+    for (Piece *p: whitePieces){
+        if (p->x == x && p->y == y) return p;
+    }
+    //Otherwise, the piece does not exist
+    return NULL;
+}
+
+int Chessboard::move(int startX, int startY, int targetX, int targetY){
+    Piece *start = location(startX, startY);
+    if (start == NULL) return 0;
+    int status = start->checkValidMove(targetX, targetY, this);
+    if (status == 0) return 0;
+    if (status == 1){
+        //Move to unoccupied spot
+        start->setPiece(targetX, targetY);
+        return 1;
+    }
+    if (status == 2){
+        //Capture piece at target spot
+        Piece *oldTarget = location(targetX, targetY);
+        oldTarget->setPiece(-1, -1);
+        start->setPiece(targetX, targetY);
+        return 2;
+    }
+    if (status == 3){
+        //Promotion
+    }
+    return 0;
+}
 
 Chessboard::~Chessboard() {}
 /*Chessboard::Chessboard(){

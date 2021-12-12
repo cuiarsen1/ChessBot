@@ -1,5 +1,6 @@
 #include "studio.h"
 #include "Chessboard.h"
+#include "Piece.h"
 
 void Studio::render() {
   out << '+';
@@ -12,7 +13,9 @@ void Studio::render() {
   for (int i = 1; i <= rows; ++i) {
     out << i;
     for (int j = 1; j <= cols; ++j) {
-      out << picture()->pieceAt(i, j);
+      Piece *temp = picture()->location(i, j);
+      if (temp == NULL) out << ' ';
+      else out << temp->name;
     }
 
     out << std::endl;

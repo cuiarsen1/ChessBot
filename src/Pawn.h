@@ -3,12 +3,11 @@
 #include "Piece.h"
 
 class Pawn: public Piece {
-    int x, y;
     int val;
-    char colour;
 public:
-    Pawn(int row, int col, char colour, Chessboard *component);
-    char pieceAt(int row, int col) override;
+    Pawn(int row, int col, char name);
+    //char pieceAt(int row, int col) override;
+    int checkValidMove(int targetX, int targetY, Chessboard *component) override;
 };
 
 #endif

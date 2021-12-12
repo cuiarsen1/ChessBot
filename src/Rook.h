@@ -3,12 +3,11 @@
 #include "Piece.h"
 
 class Rook: public Piece {
-    int x, y;
     int val;
-    char colour;
 public:
-    Rook(int x, int y, char colour, Chessboard *component);
-    char pieceAt(int row, int col) override;
+    Rook(int x, int y, char name);
+    int checkValidMove(int targetX, int targetY, Chessboard *component) override;
+    //char pieceAt(int row, int col) override;
     //int legalLocation(int targetX, int targetY) override;
 };
 

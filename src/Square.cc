@@ -2,7 +2,7 @@
 #include <iostream>
 
 
-char Square::pieceAt(int row, int col) { return ' '; }
+//char Square::pieceAt(int row, int col) { return ' '; }
 
 /*Square::Square(int x, int y){
     posx = x;

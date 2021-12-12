@@ -3,9 +3,7 @@
 #include <iostream>
 #include "Chessboard.h"
 class Square: public Chessboard{
-    
-    public:
-      char pieceAt(int row, int col) override;
+      //char pieceAt(int row, int col) override;
 };
     /*int posx, posy;
     char piece;   //change this to Piece* instead of char once Piece class is created

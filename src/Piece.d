@@ -1,1 +1,1 @@
-Piece.o: Piece.cc Chessboard.h Piece.h
+Piece.o: Piece.cc Piece.h Chessboard.h

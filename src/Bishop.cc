@@ -1,10 +1,13 @@
 #include "Chessboard.h"
 #include "Bishop.h"
-Bishop::Bishop(int row, int col, char colour, Chessboard *component):
-        Piece{component}, x{row}, y{col},colour{colour}, val{3} {}
-Bishop::Bishop(int row, int col):
-     Piece{NULL},x{row}, y{col} {}
 
+Bishop::Bishop(int row, int col, char name):
+        Piece(row, col, name), val{3} {
+            if (isupper(name)) colour = 'w';
+            else colour = 'b';
+        }
+
+/*
 //basically places a bishop onto the chessboard
 char Bishop::pieceAt(int row, int col) {
     char currentPiece = component->pieceAt(row, col);
@@ -16,7 +19,9 @@ char Bishop::pieceAt(int row, int col) {
     }
     return currentPiece;
 }
-bool Bishop::checkValidMove(int a, int b, int targetX, int targetY){
+*/
+
+int Bishop::checkValidMove(int targetX, int targetY, Chessboard *component){
      int diffX = abs(x - targetX), diffY = abs(y - targetY);
     //Ensure new move isn't to original location
     if (diffX == 0 && diffY == 0) return 0;
@@ -26,39 +31,43 @@ bool Bishop::checkValidMove(int a, int b, int targetX, int targetY){
     if (x < targetX && y < targetY){
         for (int i = 1; i < diffX; i++){
             int tempX = x + i, tempY = y + i;
-            if (component->pieceAt(tempX, tempY) != ' ') return 0;
+            Piece *tempP = component->location(tempX, tempY);
+            if (tempP != NULL) return 0;
         }
     }
     else if (x < targetX && y > targetY){
         for (int i = 1; i < diffX; i++){
             int tempX = x + i, tempY = y - i;
-            if (component->pieceAt(tempX, tempY) != ' ') return 0;
+            Piece *tempP = component->location(tempX, tempY);
+            if (tempP != NULL) return 0;
         }
     }
     else if (x > targetX && y < targetY){
         for (int i = 1; i < diffX; i++){
             int tempX = x - i, tempY = y + i;
-            if (component->pieceAt(tempX, tempY) != ' ') return 0;
+            Piece *tempP = component->location(tempX, tempY);
+            if (tempP != NULL) return 0;
         }
     }
     else if (x > targetX && y < targetY){
         for (int i = 1; i < diffX; i++){
             int tempX = x - i, tempY = y - i;
-            if (component->pieceAt(tempX, tempY) != ' ') return 0;
+            Piece *tempP = component->location(tempX, tempY);
+            if (tempP != NULL) return 0;
         }
     }
     //Finally, the target piece must either be empty or
     //occupied with enemy piece
-    char targetPiece = component->pieceAt(targetX, targetY);
-    if (targetPiece == ' ') return 1;
+    Piece *targetPiece = component->location(targetX, targetY);
+    if (targetPiece == NULL) return 1;
     if (colour == 'w'){
         //With a white bishop, the enemy pieces must be lowercase
-        if (islower(targetPiece)) return 2;
+        if (islower(targetPiece->name)) return 2;
         else return 0;
     }
     else{
         //With a black bishop, the enemy pieces must be uppercase
-        if (isupper(targetPiece)) return 2;
+        if (isupper(targetPiece->name)) return 2;
         else return 0;
     }
 }

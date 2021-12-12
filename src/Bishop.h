@@ -3,15 +3,12 @@
 #include "Piece.h"
 
 class Bishop: public Piece {
-    int x, y;
     int val;
-    char colour;
 public:
-    Bishop(int row, int col, char colour, Chessboard *component);
-    Bishop(int row, int col);
-    char pieceAt(int row, int col) override;
-    char moveTo(int row, int col);
-    bool checkValidMove(int startRow, int startCol, int endRow, int endCol);
+    Bishop(int row, int col, char name);
+    //char pieceAt(int row, int col) override;
+    //char moveTo(int row, int col);
+    int checkValidMove(int targetX, int targetY, Chessboard *component) override;
 };
 
 #endif

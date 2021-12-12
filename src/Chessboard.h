@@ -1,11 +1,20 @@
 #ifndef __CHESSBOARD_H__
 #define __CHESSBOARD_H__
 #include <string>
+#include <vector>
+
+class Piece;
 
 class Chessboard {
-   public:
+   std::vector<Piece*> blackPieces;
+   std::vector<Piece*> whitePieces;
+public:
+   void newPiece(int x, int y, char name);
+   Chessboard(); //Constructor
+   void init(); //Sets position of the pieces
+   Piece *location(int x, int y);
+   int move(int startX, int startY, int targetX, int targetY);
    virtual ~Chessboard();
-   virtual char pieceAt(int row, int col) = 0;
 };
 /*
  Square* board[8][8];

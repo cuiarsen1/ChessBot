@@ -3,10 +3,9 @@
 #include "Piece.h"
 
 class Empty: public Piece {
-    int x, y;
 public:
-    Empty(int row, int col, Chessboard *component);
-    char pieceAt(int row, int col) override;
+    Empty(int row, int col);
+    //char pieceAt(int row, int col) override;
 };
 
 #endif
