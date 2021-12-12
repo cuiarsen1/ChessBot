@@ -25,9 +25,7 @@ void Chessboard::newPiece(int x, int y, char name){
 }
 
 Chessboard::Chessboard(){
-    //Black is top, white is bottom
-    //With 16 pieces of each colour, we will store them in each vector separately
-    //Sorted by importance of each piece
+    
     newPiece(-1, -1, 'k');
     newPiece(-1, -1, 'q');
     newPiece(-1, -1, 'r');
@@ -50,24 +48,27 @@ Chessboard::Chessboard(){
 
 void Chessboard::init(){
     //If setup mode was never entered, set the pieces to corresponding locations
-    blackPieces[0]->setPiece(0, 4);
-    blackPieces[1]->setPiece(0, 3);
-    blackPieces[2]->setPiece(0, 0);
-    blackPieces[3]->setPiece(0, 7);
-    blackPieces[4]->setPiece(0, 2);
-    blackPieces[5]->setPiece(0, 5);
-    blackPieces[6]->setPiece(0, 1);
-    blackPieces[7]->setPiece(0, 6);
-    for (int i = 8; i < 16; i++) blackPieces[i]->setPiece(1, i - 8);
-    whitePieces[0]->setPiece(7, 4);
-    whitePieces[1]->setPiece(7, 3);
-    whitePieces[2]->setPiece(7, 0);
-    whitePieces[3]->setPiece(7, 7);
-    whitePieces[4]->setPiece(7, 2);
-    whitePieces[5]->setPiece(7, 5);
-    whitePieces[6]->setPiece(7, 1);
-    whitePieces[7]->setPiece(7, 6);
-    for (int i = 8; i < 16; i++) whitePieces[i]->setPiece(6, i - 8);
+    //Black is top, white is bottom
+    //With 16 pieces of each colour, we will store them in each vector separately
+    //Sorted by importance of each piece
+    newPiece(0, 4, 'k');
+    newPiece(0, 3, 'q');
+    newPiece(0, 0, 'r');
+    newPiece(0, 7, 'r');
+    newPiece(0, 2, 'b');
+    newPiece(0, 5, 'b');
+    newPiece(0, 1, 'n');
+    newPiece(0, 6, 'n');
+    for (int i = 8; i < 16; i++) newPiece(1, i - 8, 'p');
+    newPiece(7, 4, 'K');
+    newPiece(7, 3, 'Q');
+    newPiece(7, 0, 'R');
+    newPiece(7, 7, 'R');
+    newPiece(7, 2, 'B');
+    newPiece(7, 5, 'B');
+    newPiece(7, 1, 'N');
+    newPiece(7, 6, 'N');
+    for (int i = 8; i < 16; i++) newPiece(6, i - 8, 'P');
 }
 
 Piece *Chessboard::location(int x, int y){

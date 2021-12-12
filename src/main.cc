@@ -62,17 +62,17 @@ int main() {
     Chessboard *board = new Square;
     
     Studio s{board};
-
-    s.picture()->init(); //WARNING: does not take in consideration of setup mode
     
     string command;
     bool done = false;
+    bool custom = false;
 
     char turn = 'w';
 
     while (cin >> command) {
         if (command == "setup"){
             done = false;
+            custom = true;
             while (!done){
                 cin >> command;
                 if (command == "+"){
@@ -113,6 +113,10 @@ int main() {
                 }
             }
         } else if (command == "game"){
+            if (!custom){
+                //Use default board
+                s.picture()->init();
+            }
             string playerW, playerB;
             cin >> playerW >> playerB;
 
