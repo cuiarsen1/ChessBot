@@ -15,6 +15,7 @@ public:
    Piece *location(int x, int y);
    int move(int startX, int startY, int targetX, int targetY);
    bool check(char colour);
+   bool checkmate(char colour);
    virtual ~Chessboard();
 };
 /*

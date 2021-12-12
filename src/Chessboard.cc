@@ -148,6 +148,93 @@ bool Chessboard::check(char colour){
     }
 }
 
+bool Chessboard::checkmate(char colour){
+    //In order for checkmate to hold, the king must first be in check
+    if (!check(colour)) return false;
+    if (colour == 'w'){
+        for (Piece *p: whitePieces){
+            int px = p->x, py = p->y; //Stores original position of the piece
+            //Check if the white piece has no place to move
+            //If there are still moves possible that gets king out of check, then it's not checkmate
+            vector<pair<int, int>> pMoves = p->findMoves(this);
+            for (auto i: pMoves){
+                //Try making this move
+                p->setPiece(i.first, i.second);
+                //If it's not in check
+                if (!check(colour)){
+                    //Move back the piece
+                    p->setPiece(px, py);
+                    return false;
+                }
+                //Move back the piece
+                p->setPiece(px, py);
+            }
+            //Next, check if the white piece has no enemy piece to capture
+            //If there are still captures possible that gets king out of check, then it's not checkmate
+            vector<pair<int, int>> pCaptures = p->findCaptures(this);
+            for (auto i: pCaptures){
+                //Try making this capture
+                Piece *captured = location(i.first, i.second);
+                captured->setPiece(8, 8); //Move out of the board
+                p->setPiece(i.first, i.second); //Move white piece to captured spot
+                //If it's not in check
+                if (!check(colour)){
+                    //Move back the piece
+                    p->setPiece(px, py);
+                    captured->setPiece(i.first, i.second);
+                    return false;
+                }
+                //Move back the piece
+                p->setPiece(px, py);
+                captured->setPiece(i.first, i.second);
+            }
+        }
+        //If no moves can save king, it's checkmate
+        return true;
+    }
+    else{
+        for (Piece *p: blackPieces){
+            int px = p->x, py = p->y; //Stores original position of the piece
+            //Check if the black piece has no place to move
+            //If there are still moves possible that gets king out of check, then it's not checkmate
+            vector<pair<int, int>> pMoves = p->findMoves(this);
+            for (auto i: pMoves){
+                //Try making this move
+                p->setPiece(i.first, i.second);
+                //If it's not in check
+                if (!check(colour)){
+                    //Move back the piece
+                    p->setPiece(px, py);
+                    return false;
+                }
+                //Move back the piece
+                p->setPiece(px, py);
+            }
+            //Next, check if the black piece has no enemy piece to capture
+            //If there are still captures possible that gets king out of check, then it's not checkmate
+            vector<pair<int, int>> pCaptures = p->findCaptures(this);
+            for (auto i: pCaptures){
+                //Try making this capture
+                Piece *captured = location(i.first, i.second);
+                captured->setPiece(8, 8); //Move out of the board
+                p->setPiece(i.first, i.second); //Move black piece to captured spot
+                //If it's not in check
+                if (!check(colour)){
+                    //Move back the piece
+                    p->setPiece(px, py);
+                    captured->setPiece(i.first, i.second);
+                    return false;
+                }
+                //Move back the piece
+                p->setPiece(px, py);
+                captured->setPiece(i.first, i.second);
+            }
+        }
+        //If no moves can save king, it's checkmate
+        return true;
+    }
+}
+
 Chessboard::~Chessboard() {}
 /*Chessboard::Chessboard(){
     board[0][0] = new Square(0, 0,'R','B'); //B for Black, R for Rook
