@@ -6,6 +6,7 @@ King::King(int row, int col, char name):
             else colour = 'b';
         }
 
+//Legal locations include all eight adjacent locations near current (x, y)
 int King::checkValidMove(int targetX, int targetY, Chessboard *component){
     int diffX = abs(x - targetX), diffY = abs(y - targetY);
     //Ensure move location isn't same as original location

@@ -8,6 +8,7 @@ Rook::Rook(int row, int col, char name):
             else colour = 'b';
         }
 
+//Legal locations include horizontal/vertical moves
 int Rook::checkValidMove(int targetX, int targetY, Chessboard *component){
     int diffX = abs(x - targetX), diffY = abs(y - targetY);
     //Ensure new move isn't to original location

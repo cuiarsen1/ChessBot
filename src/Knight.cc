@@ -6,6 +6,7 @@ Knight::Knight(int row, int col, char name):
             else colour = 'b';
         }
 
+//Legal locations include all eight L-move locations (+-1|2, +=1|2)
 int Knight::checkValidMove(int targetX, int targetY, Chessboard *component){
     int diffX = abs(x - targetX), diffY = abs(y - targetY);
     //If target location does not follow L shape, it's invalid move

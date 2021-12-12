@@ -14,6 +14,7 @@ public:
    void init(); //Sets position of the pieces
    Piece *location(int x, int y);
    int move(int startX, int startY, int targetX, int targetY);
+   bool check(char colour);
    virtual ~Chessboard();
 };
 /*

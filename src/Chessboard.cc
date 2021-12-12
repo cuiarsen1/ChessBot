@@ -104,6 +104,50 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
     return 0;
 }
 
+bool Chessboard::check(char colour){
+    //Check if the king of the given colour's is threatened
+    if (colour == 'w'){
+        //First, get the location of white king
+        int whiteKingX = -1, whiteKingY = -1;
+        for (Piece *p: whitePieces){
+            if (p->name == 'K'){
+                whiteKingX = p->x;
+                whiteKingY = p->y;
+                break;
+            }
+        }
+        //Run through all black pieces, to see if they can reach white king in one valid move
+        for (Piece *p: blackPieces){
+            if (p->checkValidMove(whiteKingX, whiteKingY, this) == 2){
+                //The white king can be captured
+                return true;
+            }
+        }
+        //If none of the enemy pieces can reach king, then it's not in check
+        return false;
+    }
+    else{
+        //First, get the location of black king
+        int blackKingX = -1, blackKingY = -1;
+        for (Piece *p: blackPieces){
+            if (p->name == 'k'){
+                blackKingX = p->x;
+                blackKingY = p->y;
+                break;
+            }
+        }
+        //Run through all white pieces to see if they can reach black king in one valid move
+        for (Piece *p: whitePieces){
+            if (p->checkValidMove(blackKingX, blackKingY, this) == 2){
+                //The white king can be captured
+                return true;
+            }
+        }
+        //If none of the enemy pieces can reach king, then it's not in check
+        return false;
+    }
+}
+
 Chessboard::~Chessboard() {}
 /*Chessboard::Chessboard(){
     board[0][0] = new Square(0, 0,'R','B'); //B for Black, R for Rook

@@ -1,12 +1,14 @@
 #include "Chessboard.h"
 #include "Queen.h"
+using namespace std;
+
 Queen::Queen(int row, int col, char name):
         Piece(row, col, name), val{9} {
             if (isupper(name)) colour = 'w';
             else colour = 'b';
         }
-using namespace std;
 
+//Legal locations include all horizontal/vertical/diagonal moves
 int Queen::checkValidMove(int targetX, int targetY, Chessboard *component){
     int diffX = abs(x - targetX), diffY = abs(y - targetY);
     //Ensure new move isn't to original location

@@ -6,6 +6,7 @@ using namespace std;
 Pawn::Pawn(int row, int col, char name):
         Piece(row, col, name), val{1} {}
 
+//Legal locations include one unit up (or two if row # valid) and diagonal ups
 int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
     //White pieces are bottom of 2D array;
     //Thus, white pawns must decrease in Y value, as it moves up

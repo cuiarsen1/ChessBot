@@ -21,6 +21,7 @@ char Bishop::pieceAt(int row, int col) {
 }
 */
 
+//Legal locations only include those on the diagonal of current (x, y) location
 int Bishop::checkValidMove(int targetX, int targetY, Chessboard *component){
      int diffX = abs(x - targetX), diffY = abs(y - targetY);
     //Ensure new move isn't to original location
