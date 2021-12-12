@@ -10,13 +10,14 @@ class Chessboard {
    std::vector<Piece*> whitePieces;
 public:
    void newPiece(int x, int y, char name);
-   Chessboard(); //Constructor
    void init(); //Sets position of the pieces
+   void removePiece(int x, int y);
    Piece *location(int x, int y);
    int move(int startX, int startY, int targetX, int targetY);
+   bool verify();
    bool check(char colour);
    bool checkmate(char colour);
-   virtual ~Chessboard();
+   ~Chessboard();
 };
 /*
  Square* board[8][8];

@@ -9,54 +9,7 @@
 #include "Queen.h"
 #include "King.h"
 #include "Empty.h"
-
 using namespace std;
-
-bool verify(Studio &s) {
-    bool valid = true;
-    bool wking = false;
-    bool bking = false;
-
-    for (int i = 1; i <= 8; i += 1) {
-        for (int j = 1; j <= 8; j += 1) {
-            Piece *tempP = s.picture()->location(i, j);
-            if (tempP == NULL){
-                valid = false;
-                return valid;
-            }
-            if (tempP->name == 'K') {
-                if (wking == false) {
-                    wking = true;
-                } else {
-                    valid = false;
-                    return valid;
-                }
-                // verify king not in check
-            } else if (tempP->name == 'k') {
-                if (bking == false) {
-                    bking = true;
-                } else {
-                    valid = false;
-                    return valid;
-                }
-                // verify king not in check
-            } else if (i == 1 || i == 8) {
-                if (tempP->name == 'P' || tempP->name == 'p') {
-                    valid = false;
-                    return valid;
-                }
-            }
-        }
-    }
-
-    if (wking && bking) {
-        return valid;
-    }
-
-    return false;
-}
-
-
 
 int main() {
     Chessboard *board = new Square;
@@ -80,13 +33,17 @@ int main() {
                     char pos1;
                     int pos2;
                     cin >> piece >> pos1 >> pos2;
-                    s.picture()->newPiece(pos2, pos1-'a'+1, piece);
+                    //First check if the target location already has a piece
+                    s.picture()->removePiece(8-pos2, pos1-'a');
+                    s.picture()->newPiece(8-pos2, pos1-'a', piece);
+                    s.render();
                 }
                 else if (command == "-"){
                     char pos1;
                     int pos2;
                     cin >> pos1 >> pos2;
-                    //s.picture() = new Empty(pos2, pos1-'a'+1,s.picture());   //questionable
+                    s.picture()->removePiece(8-pos2, pos1-'a');
+                    s.render();
                 }
                 else if (command == "="){
                     char colour;
@@ -101,15 +58,12 @@ int main() {
                     }
                 }
                 else if (command == "done"){
-                    if (verify(s) == true) {
+                    if (s.picture()->verify()) {
                         done = true;
                         cout << "setup mode is complete" << endl;
                     } else {
                         cout << "setup mode is invalid" << endl;
                     }
-                }
-                else if (command == "render"){
-                    s.render();
                 }
             }
         } else if (command == "game"){
@@ -117,6 +71,7 @@ int main() {
                 //Use default board
                 s.picture()->init();
             }
+            //Otherwise, use the board from setup mode
             string playerW, playerB;
             cin >> playerW >> playerB;
 
@@ -211,7 +166,6 @@ int main() {
                             gameOver = true;
                         } else if (command == "render") {
                             s.render();
-                            validTurn = true;
                         }
                     }
                     cout << "TURN OVER\n";

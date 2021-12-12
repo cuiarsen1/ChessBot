@@ -11,13 +11,12 @@ void Studio::render() {
   }
   out << std::endl;
   for (int i = 0; i < rows; ++i) {
-    out << i + 1;
+    out << 8 - i;
     for (int j = 0; j < cols; ++j) {
       Piece *temp = picture()->location(i, j);
       if (temp == NULL) out << ' ';
       else out << temp->name;
     }
-
     out << std::endl;
   }
 

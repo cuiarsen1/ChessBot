@@ -24,26 +24,24 @@ void Chessboard::newPiece(int x, int y, char name){
     else if (name == 'p') blackPieces.push_back(new Pawn(x, y, name));
 }
 
-Chessboard::Chessboard(){
-    
-    newPiece(-1, -1, 'k');
-    newPiece(-1, -1, 'q');
-    newPiece(-1, -1, 'r');
-    newPiece(-1, -1, 'r');
-    newPiece(-1, -1, 'b');
-    newPiece(-1, -1, 'b'); 
-    newPiece(-1, -1, 'n');
-    newPiece(-1, -1, 'n');
-    for (int i = 0; i < 8; i++) newPiece(-1, -1, 'p');
-    newPiece(-1, -1, 'K');
-    newPiece(-1, -1, 'Q');
-    newPiece(-1, -1, 'R');
-    newPiece(-1, -1, 'R');
-    newPiece(-1, -1, 'B');
-    newPiece(-1, -1, 'B'); 
-    newPiece(-1, -1, 'N');
-    newPiece(-1, -1, 'N');
-    for (int i = 0; i < 8; i++) newPiece(-1, -1, 'P');
+void Chessboard::removePiece(int x, int y){
+    int index = 0;
+    for (Piece *p: blackPieces){
+        if (p->x == x && p->y == y){
+            blackPieces.erase(blackPieces.begin() + index);
+            delete p;
+        }
+        index++;
+    }
+    index = 0;
+    for (Piece *p: whitePieces){
+        if (p->x == x && p->y == y){
+            whitePieces.erase(whitePieces.begin() + index);
+            delete p;
+        }
+        index++;
+    }
+    //If the piece is not found, no action is taken
 }
 
 void Chessboard::init(){
@@ -96,8 +94,7 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
     }
     if (status == 2){
         //Capture piece at target spot
-        Piece *oldTarget = location(targetX, targetY);
-        oldTarget->setPiece(-1, -1);
+        removePiece(targetX, targetY);
         start->setPiece(targetX, targetY);
         return 2;
     }
@@ -105,6 +102,38 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
         //Promotion
     }
     return 0;
+}
+
+bool Chessboard::verify(){
+    //First, check if there's only one king of each colour
+    bool WKing = false, BKing = false;
+    for (Piece *p: whitePieces){
+        if (p->name == 'K'){
+            //if there's already a white king, and a second one is found
+            //Then two white kings exist, thus invalid
+            if (WKing) return false;
+            WKing = true; //Otherwise, mark the boolean since a white king exists
+            //Next, ensure the king is not in check
+            if (check('w')) return false;
+        }
+        else if (p->name == 'P'){
+            //Check if all white pawns are not on top/bottom row
+            if (p->x == 7 || p->x == 0) return false;
+        }
+    }
+    for (Piece *p: blackPieces){
+        if (p->name == 'k'){
+            if (BKing) return false;
+            BKing = true;
+            if (check('b')) return false;
+        }
+        else if (p->name == 'p'){
+            if (p->x == 0 || p->x == 7) return false;
+        }
+    }
+    //Finally, with all pawns in valid positions and the king not in check,
+    //We verify that a king does exist, since there must be exactly one king of each
+    return (WKing && BKing);
 }
 
 bool Chessboard::check(char colour){
@@ -238,7 +267,11 @@ bool Chessboard::checkmate(char colour){
     }
 }
 
-Chessboard::~Chessboard() {}
+Chessboard::~Chessboard() {
+    //Clear all pieces used
+    for (Piece *p: blackPieces) delete p;
+    for (Piece *p: whitePieces) delete p;
+}
 /*Chessboard::Chessboard(){
     board[0][0] = new Square(0, 0,'R','B'); //B for Black, R for Rook
     board[0][1] = new Square(0, 1,'K','B');
