@@ -17,6 +17,7 @@ public:
    bool verify();
    bool check(char colour);
    bool checkmate(char colour);
+   bool stalemate(char colour);
    ~Chessboard();
 };
 /*

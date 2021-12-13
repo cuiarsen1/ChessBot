@@ -85,18 +85,40 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
     if (start == NULL) return 0;
     int status = start->checkValidMove(targetX, targetY, this);
     if (status == 0) return 0;
-    //Make sure new move doesn't get our king into check
-    if (check(start->colour)) return 0;
     if (status == 1){
         //Move to unoccupied spot
         start->setPiece(targetX, targetY);
+        //Make sure new move doesn't get our king into check
+        if (check(start->colour)){
+            //If it does, revert the move and return 0 to show invalid
+            start->setPiece(startX, startY);
+            return 0;
+        }
         return 1;
     }
     if (status == 2){
         //Capture piece at target spot
-        removePiece(targetX, targetY);
+        //Note that normally, we would call removePiece(targetX, targetY)
+        //However, the capture might result in a check, thus making the move invalid
+        //Thus, we first move the oldTarget off the chessboard to test for check
+        //If it does result in a check, revert the changes
+        //If not, then call removePiece(oldTarget)
+        Piece *oldTarget = location(targetX, targetY);
+        oldTarget->setPiece(8, 8); //Move old target off the chessboard
         start->setPiece(targetX, targetY);
-        return 2;
+        //Make sure new move doesn't get our king into check
+        if (check(start->colour)){
+            //Revert changes
+            start->setPiece(startX, startY);
+            oldTarget->setPiece(targetX, targetY);
+            return 0;
+        }
+        else{
+            //Valid capture; delete old target
+            //Stored at the temporary (8, 8) position
+            removePiece(8, 8);
+            return 2;
+        }
     }
     if (status == 3){
         //Promotion
@@ -207,7 +229,7 @@ bool Chessboard::checkmate(char colour){
             for (auto i: pCaptures){
                 //Try making this capture
                 Piece *captured = location(i.first, i.second);
-                captured->setPiece(8, 8); //Move out of the board
+                captured->setPiece(-1, -1); //Move out of the board
                 p->setPiece(i.first, i.second); //Move white piece to captured spot
                 //If it's not in check
                 if (!check(colour)){
@@ -248,7 +270,7 @@ bool Chessboard::checkmate(char colour){
             for (auto i: pCaptures){
                 //Try making this capture
                 Piece *captured = location(i.first, i.second);
-                captured->setPiece(8, 8); //Move out of the board
+                captured->setPiece(-1, -1); //Move out of the board
                 p->setPiece(i.first, i.second); //Move black piece to captured spot
                 //If it's not in check
                 if (!check(colour)){
@@ -265,6 +287,89 @@ bool Chessboard::checkmate(char colour){
         //If no moves can save king, it's checkmate
         return true;
     }
+}
+
+bool Chessboard::stalemate(char colour){
+    //In order for the game to be stalemate,
+    //The colour in turn should not be in check, and every move/capture gets in check
+    //Condition 1: The king must not be in check
+    if (check(colour)) return false;
+    //Condition 2: For every possible move, it gets the king into check
+    if (colour == 'b'){
+        for (Piece *p: blackPieces){
+            int px = p->x, py = p->y; //Stores original position of the piece
+            vector<pair<int, int>> pMoves = p->findMoves(this);
+            for (auto i: pMoves){
+                //Try making this move
+                p->setPiece(i.first, i.second);
+                //If it's not in check
+                if (!check('b')){
+                    //Move back the piece
+                    p->setPiece(px, py);
+                    return false;
+                }
+                //Move back the piece
+                p->setPiece(px, py);
+            }
+            //Next, check if every capture move gets black king into check
+            vector<pair<int, int>> pCaptures = p->findCaptures(this);
+            for (auto i: pCaptures){
+                //Try making this capture
+                Piece *captured = location(i.first, i.second);
+                captured->setPiece(-1, -1); //Move out of the board
+                p->setPiece(i.first, i.second); //Move black piece to captured spot
+                //If it's not in check
+                if (!check('b')){
+                    //Move back the piece
+                    p->setPiece(px, py);
+                    captured->setPiece(i.first, i.second);
+                    return false;
+                }
+                //Move back the piece
+                p->setPiece(px, py);
+                captured->setPiece(i.first, i.second);
+            }
+        }
+    }
+    else{
+        //It is white's move
+        for (Piece *p: whitePieces){
+            int px = p->x, py = p->y; //Stores original position of the piece
+            vector<pair<int, int>> pMoves = p->findMoves(this);
+            for (auto i: pMoves){
+                //Try making this move
+                p->setPiece(i.first, i.second);
+                //If it's not in check
+                if (!check('w')){
+                    //Move back the piece
+                    p->setPiece(px, py);
+                    return false;
+                }
+                //Move back the piece
+                p->setPiece(px, py);
+            }
+            //Next, check if every capture move gets white king into check
+            vector<pair<int, int>> pCaptures = p->findCaptures(this);
+            for (auto i: pCaptures){
+                //Try making this capture
+                Piece *captured = location(i.first, i.second);
+                captured->setPiece(-1, -1); //Move out of the board
+                p->setPiece(i.first, i.second); //Move white piece to captured spot
+                //If it's not in check
+                if (!check('w')){
+                    //Move back the piece
+                    p->setPiece(px, py);
+                    captured->setPiece(i.first, i.second);
+                    return false;
+                }
+                //Move back the piece
+                p->setPiece(px, py);
+                captured->setPiece(i.first, i.second);
+            }
+        }
+    }
+    //Otherwise, it's in a stalemate
+    return true;
 }
 
 Chessboard::~Chessboard() {

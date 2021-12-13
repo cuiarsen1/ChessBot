@@ -99,14 +99,32 @@ int main() {
 
             bool whiteWin = false;
             bool blackWin = false;
+            bool stalemate = false;
             double pointsW = 0;
             double pointsB = 0;
 
             while (!gameOver) {
+                //Before each turn, check the current state of the chessboard
+                cout << "CHECK\n";
+                if (s.picture()->stalemate(turn)){
+                    cout << "Stalemate!\n";
+                    stalemate = true;
+                    gameOver = true;
+                    continue;
+                }
+                if (s.picture()->checkmate(turn)){
+                    cout << (turn == 'b' ? "Black" : "White") << " is in checkmate!\n";
+                    whiteWin = true;
+                    gameOver = true;
+                    continue;
+                }
+                else if (s.picture()->check(turn)){
+                    cout << (turn == 'b' ? "Black" : "White") << " is in check!\n";
+                }
                 if (turn == 'w') {
                     bool result = playerW->turn(s.picture());
                     if (!result){ //Resign
-                        cout << "DEBUG resigned\n";
+                        cout << "DEBUG resigned or EOF\n";
                         gameOver = true;
                         blackWin = true;
                         continue;
@@ -119,7 +137,7 @@ int main() {
                 else {
                     bool result = playerB->turn(s.picture());
                     if (!result){ //Resign
-                        cout << "DEBUG resigned\n";
+                        cout << "DEBUG resigned or EOF\n";
                         gameOver = true;
                         whiteWin = true;
                         continue;
@@ -129,19 +147,23 @@ int main() {
                     }
                     turn = 'w';
                 }
+                //DEBUG
+                s.render();
             }
             
+            cout << "DEBUG game finished\n";
             if (whiteWin) {
                 pointsW += 1;
             } else if (blackWin) {
                 pointsB += 1;
-            } else if (!blackWin && !whiteWin) {
+            } else if (stalemate) {
                 pointsW += 0.5;
                 pointsB += 0.5;
             }
+            cout << "DEBUG score: W " << pointsW << " B " << pointsB << endl;
         }
-         else if (cin.eof()) {
-            // Print scores
+        else{
+            cout << "Invalid menu command!\n";
         }
     }
 }

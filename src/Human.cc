@@ -31,7 +31,7 @@ bool Human::turn(Chessboard *component){
                 continue;
             }
             if (p->colour != colour){
-                cout << "Invalid piece! Try again.\n";
+                cout << "Invalid piece colour! Try again.\n";
                 continue;
             }
             //Run the move to see the result
