@@ -104,6 +104,7 @@ int main() {
             double pointsB = 0;
 
             while (!gameOver) {
+                s.render();
                 //Before each turn, check the current state of the chessboard
                 cout << "CHECK\n";
                 if (s.picture()->stalemate(turn)){
