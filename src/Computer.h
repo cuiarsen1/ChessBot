@@ -10,6 +10,7 @@ public:
     bool turn(Chessboard *component) override;
 private:
    void level1(Chessboard *component);
+   void level2(Chessboard *component);
 };
 
 #endif

@@ -49,13 +49,13 @@ int Queen::checkValidMove(int targetX, int targetY, Chessboard *component){
     else{
         //Check if the path to new location isn't blocked off
         if (diffX == 0){ //Move is horizontal
-            for (int tempY = min(y, diffY) + 1; tempY < max(y, diffY); tempY++){ //Example: (2, 3) to (2, 7) has 7-3-1=3 pieces on horizontal axis
+            for (int tempY = min(y, targetY) + 1; tempY < max(y, targetY); tempY++){ //Example: (2, 3) to (2, 7) has 7-3-1=3 pieces on horizontal axis
                 //If not empty, it's occupied, and thus the path is blocked
                 if (component->location(x, tempY) != NULL) return 0;
             }
         }
         else if (diffY == 0){ //Move is vertical
-            for (int tempX = min(x, diffX) + 1; tempX < max(x, diffX); tempX++){ //Example: (3, 3) to (7, 3) has 7-3-1=3 pieces on horizontal axis
+            for (int tempX = min(x, targetX) + 1; tempX < max(x, targetX); tempX++){ //Example: (3, 3) to (7, 3) has 7-3-1=3 pieces on horizontal axis
                 //If not empty, it's occupied, and thus the path is blocked
                 if (component->location(tempX, y) != NULL) return 0;
             }

@@ -104,7 +104,7 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
         //If it does result in a check, revert the changes
         //If not, then call removePiece(oldTarget)
         Piece *oldTarget = location(targetX, targetY);
-        oldTarget->setPiece(8, 8); //Move old target off the chessboard
+        oldTarget->setPiece(-1, -1); //Move old target off the chessboard
         start->setPiece(targetX, targetY);
         //Make sure new move doesn't get our king into check
         if (check(start->colour)){
@@ -115,8 +115,8 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
         }
         else{
             //Valid capture; delete old target
-            //Stored at the temporary (8, 8) position
-            removePiece(8, 8);
+            //Stored at the temporary (-1, -1) position
+            removePiece(-1, -1);
             return 2;
         }
     }
@@ -162,7 +162,7 @@ bool Chessboard::check(char colour){
     //Check if the king of the given colour's is threatened
     if (colour == 'w'){
         //First, get the location of white king
-        int whiteKingX = -1, whiteKingY = -1;
+        int whiteKingX, whiteKingY;
         for (Piece *p: whitePieces){
             if (p->name == 'K'){
                 whiteKingX = p->x;
@@ -182,7 +182,7 @@ bool Chessboard::check(char colour){
     }
     else{
         //First, get the location of black king
-        int blackKingX = -1, blackKingY = -1;
+        int blackKingX, blackKingY;
         for (Piece *p: blackPieces){
             if (p->name == 'k'){
                 blackKingX = p->x;

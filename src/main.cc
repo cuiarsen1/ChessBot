@@ -12,6 +12,7 @@
 #include "Player.h"
 #include "Human.h"
 #include "Computer.h"
+#include <time.h>
 using namespace std;
 
 int main() {
@@ -22,6 +23,8 @@ int main() {
     string command;
     bool done = false;
     bool custom = false;
+    double pointsW = 0;
+    double pointsB = 0;
 
     char turn = 'w';
 
@@ -70,6 +73,7 @@ int main() {
                 }
             }
         } else if (command == "game"){
+            srand(time(NULL)); //Random seed for each game
             if (!custom) s.picture()->init(); //Use default board
             //Otherwise, use the board from setup mode
             string playerWText, playerBText;
@@ -100,8 +104,6 @@ int main() {
             bool whiteWin = false;
             bool blackWin = false;
             bool stalemate = false;
-            double pointsW = 0;
-            double pointsB = 0;
 
             while (!gameOver) {
                 s.render();
@@ -143,7 +145,6 @@ int main() {
                 }
             }
             
-            cout << "DEBUG game finished\n";
             //Remove the objects
             delete playerB;
             delete playerW;
