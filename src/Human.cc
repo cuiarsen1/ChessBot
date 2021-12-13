@@ -23,7 +23,6 @@ bool Human::turn(Chessboard *component){
             targetX = 8 - targetX;
             int startY = startYLetter - 'a';
             int targetY = targetYLetter - 'a';
-            cout << "DEBUG human move " << startX << " " << startY << " " << targetX << " " << targetY << endl;
             //Before calling move, ensure the starting piece is of the Human's colour
             Piece *p = component->location(startX, startY);
             if (p == NULL){
@@ -36,7 +35,12 @@ bool Human::turn(Chessboard *component){
             }
             //Run the move to see the result
             int result = component->move(startX, startY, targetX, targetY);
-            if (result != 0) return true; //If non-zero move, the move was successful
+            //If non-zero move, the move was successful
+            if (result != 0){
+                cout << (colour == 'b' ? "Black" : "White") << " played ";
+                cout << startYLetter << startX << " to " << targetYLetter << targetX << endl;
+                return true;
+            }
             else{
                 cout << "Invalid move! Try again.\n";
                 continue;

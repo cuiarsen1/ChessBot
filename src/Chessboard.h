@@ -6,9 +6,9 @@
 class Piece;
 
 class Chessboard {
+public:
    std::vector<Piece*> blackPieces;
    std::vector<Piece*> whitePieces;
-public:
    void newPiece(int x, int y, char name);
    void init(); //Sets position of the pieces
    void removePiece(int x, int y);

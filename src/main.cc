@@ -106,7 +106,6 @@ int main() {
             while (!gameOver) {
                 s.render();
                 //Before each turn, check the current state of the chessboard
-                cout << "CHECK\n";
                 if (s.picture()->stalemate(turn)){
                     cout << "Stalemate!\n";
                     stalemate = true;
@@ -130,9 +129,6 @@ int main() {
                         blackWin = true;
                         continue;
                     }
-                    else{
-                        cout << "DEBUG move registered\n";
-                    }
                     turn = 'b';
                 }
                 else {
@@ -143,16 +139,14 @@ int main() {
                         whiteWin = true;
                         continue;
                     }
-                    else{
-                        cout << "DEBUG move registered\n";
-                    }
                     turn = 'w';
                 }
-                //DEBUG
-                s.render();
             }
             
             cout << "DEBUG game finished\n";
+            //Remove the objects
+            delete playerB;
+            delete playerW;
             if (whiteWin) {
                 pointsW += 1;
             } else if (blackWin) {
