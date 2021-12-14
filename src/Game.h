@@ -1,6 +1,7 @@
 #ifndef _GAME_H_
 #define _GAME_H_
 #include "TextObserver.h"
+#include "GraphicalObserver.h"
 #include "Chessboard.h"
 #include "Player.h"
 
@@ -9,6 +10,7 @@
 class Game {
     Chessboard *component;
     TextObserver *TO; //Text Observer
+    GraphicalObserver *GO; //Graphical Observer
     Player *playerB;
     Player *playerW;
     bool gameOver; //To see if the game ended with a result
