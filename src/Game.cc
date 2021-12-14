@@ -149,7 +149,7 @@ void Game::setup(){
             //Since a change has been registered, we render the observers
             component->renderObservers();
         }
-        else if (setupCommand == "colour"){
+        else if (setupCommand == "="){
             //Set which side goes first
             char colourChar; //Default value space to avoid errors
             iss >> colourChar;
@@ -247,6 +247,12 @@ void Game::restart(){
     custom = false;
     //By default, white starts first
     move = 'w';
+}
+
+void Game::score(){
+    cout << "Final score:\n";
+    cout << "White: " << whiteScore << endl;
+    cout << "Black: " << blackScore << endl;
 }
 
 Game::~Game(){

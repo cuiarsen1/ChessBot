@@ -8,9 +8,7 @@ int main() {
     Game *g = new Game(); //Create Game object
     g->interact();
     //When the game is finished, output the score
-    cout << "Final score:\n";
-    cout << "White: " << g->whiteScore << endl;
-    cout << "Black: " << g->blackScore << endl;
+    g->score();
     delete g;
     return 0;
 }

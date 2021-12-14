@@ -22,6 +22,7 @@ public:
     void setup(); //For setup mode
     void inGame(); //For all moves made in-game
     void restart(); //For new match
+    void score(); //Display the score
     ~Game(); //Destructor
 };
 
