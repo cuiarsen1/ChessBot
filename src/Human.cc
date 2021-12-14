@@ -3,6 +3,7 @@
 #include "Chessboard.h"
 #include "Piece.h"
 #include <iostream>
+#include <sstream>
 #include <string>
 using namespace std;
 
@@ -12,9 +13,14 @@ bool Human::turn(Chessboard *component){
     //All the valid turns include: move __ __ and resign
     //For the sake of testing, render is also valid
     //Returns true if a move was made, false if resigned
-    string cmd;
-    while (cin >> cmd){
+    string turnLine;
+    while (getline(cin, turnLine)){
+        istringstream iss(turnLine);
+        string cmd;
+        iss >> cmd;
         if (cmd == "move"){
+            string startInput, targetInput;
+            iss >> startInput >> targetInput;
             char startYLetter, targetYLetter;
             int startXNumber, targetXNumber;
             cin >> startYLetter >> startXNumber >> targetYLetter >> targetXNumber;

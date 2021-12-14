@@ -22,10 +22,9 @@ vector<char> validPieces{'K', 'k', 'Q', 'q', 'R', 'r', 'B', 'b', 'N', 'n', 'P', 
 //For the constructor, with the Chessboard not clearing after every match
 //We must initialize it when the Game runs, thus new Chessboard() is called
 //Furthermore, the observers should start up with the chessboard as well
-//Finally, the booleans "gameOver" and "custom" would start false,
-//and white starts by default
 Game::Game(): component{new Square}, TO{new TextObserver(component)},
-        gameOver{false}, custom{false}, move{'w'} {}
+        playerB{NULL}, playerW{NULL}, gameOver{false}, custom{false}, move{'w'},
+        whiteScore{0}, blackScore{0} {}
 
 void Game::interact(){
     //Read from user input until EOF
@@ -86,9 +85,9 @@ void Game::setup(){
         iss >> setupCommand;
         if (setupCommand == "+"){
             //Add piece
-            char pieceChar = ' ', posY = ' '; //Default values space for eliminating input errors
-            int posX = -1; //Default value -1 For eliminating input errors
-            iss >> pieceChar >> posY >> posX;
+            char pieceChar;
+            string pos;
+            iss >> pieceChar >> pos;
             //First, check validity of the pieceChar
             bool pieceValid = false;
             for (char i: validPieces){
@@ -98,14 +97,19 @@ void Game::setup(){
                 cout << "Invalid piece to add!\n";
                 continue;
             }
+            if (pos.length() != 2){
+                cout << "Invalid position!\n";
+                continue;
+            }
             //Next, check validity of posY
-            //Since it's a position (column), then it must be in a, b, ..., h
-            if (!(posY - 'a' >= 0 && posY - 'a' <= 7)){
+            int posX = char(pos[1]) - '0';
+            int posY = char(pos[0]) - 'a';
+            if (!(posY >= 0 && posY <= 7)){
                 cout << "Invalid column letter!\n";
                 continue;
             }
             //Finally, check validity of posX
-            //It's also a position, then 1<=posX<=8 for the input
+            //It's also a position, then 1 <= posX <= 8 for the input
             if (!(posX >= 1 && posX <= 8)){
                 cout << "Invalid row letter!\n";
                 continue;
@@ -114,31 +118,35 @@ void Game::setup(){
             //By definition, adding a piece to an existing piece's location would
             //replace the old piece
             //Thus, we remove the original piece of the given location first
-            component->removePiece(8 - posX, posY - 'a');
+            component->removePiece(8 - posX, posY);
             //Next, add the piece
-            component->newPiece(8 - posX, posY - 'a', pieceChar);
+            component->newPiece(8 - posX, posY, pieceChar);
             //Since a change has been registered, we render the observers
             component->renderObservers();
         }
         else if (setupCommand == "-"){
             //Remove piece
-            char posY = ' '; //Default value space to eliminate errors
-            int posX = -1; //Default value -1 to avoid errors
-            iss >> posY >> posX;
+            string pos;
+            iss >> pos;
+            if (pos.length() != 2){
+                cout << "Invalid position!\n";
+                continue;
+            }
+            int posX = char(pos[1]) - '0';
+            int posY = char(pos[0]) - 'a';
             //Next, check validity of posY
-            //Since it's a position (column), then it must be in a, b, ..., h
-            if (!(posY - 'a' >= 0 && posY - 'a' <= 7)){
+            if (!(posY >= 0 && posY <= 7)){
                 cout << "Invalid column letter!\n";
                 continue;
             }
             //Finally, check validity of posX
-            //It's also a position, then 1<=posX<=8 for the input
+            //It's also a position, then 1 <= posX <= 8 for the input
             if (!(posX >= 1 && posX <= 8)){
                 cout << "Invalid row letter!\n";
                 continue;
             }
             //After the input is verified, we remove the piece
-            component->removePiece(8 - posX, posY - 'a');
+            component->removePiece(8 - posX, posY);
             //Since a change has been registered, we render the observers
             component->renderObservers();
         }
@@ -244,6 +252,7 @@ void Game::restart(){
 
 Game::~Game(){
     //Delete the studio and the two players
+    delete TO;
     delete component;
     delete playerB;
     delete playerW;

@@ -11,5 +11,6 @@ int main() {
     cout << "Final score:\n";
     cout << "White: " << g->whiteScore << endl;
     cout << "Black: " << g->blackScore << endl;
+    delete g;
     return 0;
 }
