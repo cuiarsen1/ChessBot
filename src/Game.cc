@@ -1,0 +1,250 @@
+#include <iostream>
+#include <sstream>
+#include <string>
+#include "Game.h"
+#include "Square.h"
+#include "Human.h"
+#include "Computer.h"
+using namespace std;
+
+//Vectors for testing
+vector<string> validPlayers{"human", "computer1", "computer2", "computer3"};
+vector<char> validPieces{'K', 'k', 'Q', 'q', 'R', 'r', 'B', 'b', 'N', 'n', 'P', 'p'};
+
+//Some notes to the structure of Game (for myself):
+//Chessboard does NOT have to be recreated before/after every match
+//This is because we can just delete all pieces in the two vectors instead
+//Call Chessboard->reset() to achieve this
+//However, the players do need to be recreated
+//Ensure both players are deleted when a match concludes
+//And is only reinitialized with user input (game HUMAN COMPUTER2)
+
+//For the constructor, with the Chessboard not clearing after every match
+//We must initialize it when the Game runs, thus new Chessboard() is called
+//Furthermore, the observers should start up with the chessboard as well
+//Finally, the booleans "gameOver" and "custom" would start false,
+//and white starts by default
+Game::Game(): component{new Square}, TO{new TextObserver(component)},
+        gameOver{false}, custom{false}, move{'w'} {}
+
+void Game::interact(){
+    //Read from user input until EOF
+    //NOTE: to avoid cases such as "game human", where some input is missing,
+    //but with "game" expecting one more input, then it reads takes the command on the next
+    //line as the second parameter, I will use istringstream to handle user inputs.
+    string interactLine = " ";
+    while (getline(cin, interactLine)){
+        istringstream iss(interactLine);
+        string interactCommand;
+        iss >> interactCommand;
+        if (interactCommand == "setup"){
+            custom = true;
+            setup();
+        }
+        else if (interactCommand == "game"){
+            //First get the players in the game
+            string whiteText = " ", blackText = " "; //Default values space to avoid errors
+            iss >> whiteText >> blackText;
+            //First, make sure black given inputs are valid players
+            //So cases such as "game human ai1" does not create a human player then throw error
+            bool whiteValid = false, blackValid = false;
+            for (string i: validPlayers){
+                if (whiteText == i) whiteValid = true;
+                if (blackText == i) blackValid = true;
+            }
+            //If any one of the players is invalid, the input is invalid
+            if (!whiteValid || !blackValid){
+                cout << "Invalid players!\n";
+                continue;
+            }
+            //Otherwise, it is valid
+            //Create the players
+            if (whiteText == "computer1") playerW = new Computer('w', 1);
+            else if (whiteText == "computer2") playerW = new Computer('w', 2);
+            else if (whiteText == "computer3") playerW = new Computer('w', 3);
+            else playerW = new Human('w');
+            if (blackText == "computer1") playerB = new Computer('b', 1);
+            else if (blackText == "computer2") playerB = new Computer('b', 2);
+            else if (blackText == "computer3") playerB = new Computer('b', 3);
+            else playerB = new Human('b');
+            //If setup mode wasn't used, use the default chessboard
+            if (!custom) component->init();
+            inGame();
+        }
+        else{
+            cout << "DEBUG <" << interactCommand << ">\n";
+            cout << "Invalid command!\n";
+        }
+    }
+}
+
+void Game::setup(){
+    string setupLine = " ";
+    while (getline(cin, setupLine)){
+        istringstream iss(setupLine);
+        string setupCommand;
+        iss >> setupCommand;
+        if (setupCommand == "+"){
+            //Add piece
+            char pieceChar = ' ', posY = ' '; //Default values space for eliminating input errors
+            int posX = -1; //Default value -1 For eliminating input errors
+            iss >> pieceChar >> posY >> posX;
+            //First, check validity of the pieceChar
+            bool pieceValid = false;
+            for (char i: validPieces){
+                if (i == pieceChar) pieceValid = true;
+            }
+            if (!pieceValid){
+                cout << "Invalid piece to add!\n";
+                continue;
+            }
+            //Next, check validity of posY
+            //Since it's a position (column), then it must be in a, b, ..., h
+            if (!(posY - 'a' >= 0 && posY - 'a' <= 7)){
+                cout << "Invalid column letter!\n";
+                continue;
+            }
+            //Finally, check validity of posX
+            //It's also a position, then 1<=posX<=8 for the input
+            if (!(posX >= 1 && posX <= 8)){
+                cout << "Invalid row letter!\n";
+                continue;
+            }
+            //After the input is verified, we add the piece
+            //By definition, adding a piece to an existing piece's location would
+            //replace the old piece
+            //Thus, we remove the original piece of the given location first
+            component->removePiece(8 - posX, posY - 'a');
+            //Next, add the piece
+            component->newPiece(8 - posX, posY - 'a', pieceChar);
+            //Since a change has been registered, we render the observers
+            component->renderObservers();
+        }
+        else if (setupCommand == "-"){
+            //Remove piece
+            char posY = ' '; //Default value space to eliminate errors
+            int posX = -1; //Default value -1 to avoid errors
+            iss >> posY >> posX;
+            //Next, check validity of posY
+            //Since it's a position (column), then it must be in a, b, ..., h
+            if (!(posY - 'a' >= 0 && posY - 'a' <= 7)){
+                cout << "Invalid column letter!\n";
+                continue;
+            }
+            //Finally, check validity of posX
+            //It's also a position, then 1<=posX<=8 for the input
+            if (!(posX >= 1 && posX <= 8)){
+                cout << "Invalid row letter!\n";
+                continue;
+            }
+            //After the input is verified, we remove the piece
+            component->removePiece(8 - posX, posY - 'a');
+            //Since a change has been registered, we render the observers
+            component->renderObservers();
+        }
+        else if (setupCommand == "colour"){
+            //Set which side goes first
+            char colourChar = ' '; //Default value space to avoid errors
+            iss >> colourChar;
+            //Input colour must be one of white and black
+            if (colourChar != 'w' && colourChar != 'b'){
+                cout << "Invalid color!\n";
+                continue;
+            }
+            //If the input colour is valid, update the move bool
+            move = colourChar;
+            //Since the board is unaffected, the observers do not need to be notified
+            //However, we should let the user know that the colour is updated
+            cout << (move == 'b' ? "Black" : "White") << " starts!\n";
+        }
+        else if (setupCommand == "done"){
+            //Exit setup mode
+            //Before exiting, verify the chessboard is in a valid setup
+            if (component->verify()){
+                //Successful
+                cout << "Setup mode is complete!\n";
+                return;
+            }
+            //Otherwise, it's not a valid setup
+            cout << "Setup is invalid!\n";
+            continue;
+        }
+        else{
+            cout << "Invalid setup command!\n";
+        }
+    }
+}
+
+void Game::inGame(){
+    //Unlike setup, which would only exit when the user calls "done",
+    //inGame exits when the game ends with one side winning, or a stalemate only
+    //In other words, whether or not the function exits does not depend on user input
+    string gameLine = " ";
+    while (!gameOver){
+        //Render the board before every move, so the player knows the state
+        component->renderObservers();
+        cout << (move == 'b' ? "Black" : "White") << "'s turn!\n";
+        //If current side is in stalemate
+        if (component->stalemate(move)){
+            gameOver = true;
+            cout << "Stalemate!\n";
+            blackScore += 0.5;
+            whiteScore += 0.5;
+            restart(); //Clear all memory used for current match
+            break;
+        }
+        //Perform call to see if current side is in checkmate
+        if (component->checkmate(move)){
+            gameOver = true;
+            cout << "Checkmate! " << (move == 'b' ? "White" : "Black") << " wins!\n";
+            if (move == 'b') whiteScore++;
+            else blackScore++;
+            restart(); //Clear all memory used for current match
+            break;
+        }
+        //If current side is in check
+        else if (component->check(move)){
+            cout << (move == 'b' ? "Black" : "White") << " is in check!\n";
+        }
+        if (move == 'b'){
+            bool result = playerB->turn(component);
+            if (!result){
+                //Resignation
+                cout << "Black resigns!\n";
+                gameOver = true;
+            }
+            //Otherwise, it was a valid move; switch sides for next move
+            else move = 'w';
+        }
+        else{
+            bool result = playerW->turn(component);
+            if (!result){
+                //Resignation
+                cout << "White resigns!\n";
+                gameOver = true;
+            }
+            //Otherwise, it was a valid move; switch sides for next move
+            else move = 'b';
+        }
+    }
+}
+
+void Game::restart(){
+    //To restart, first reset the chessboard
+    component->reset();
+    //Next, delete the two players
+    delete playerB;
+    delete playerW;
+    //Reset the booleans "gameOver" and "custom"
+    gameOver = false;
+    custom = false;
+    //By default, white starts first
+    move = 'w';
+}
+
+Game::~Game(){
+    //Delete the studio and the two players
+    delete component;
+    delete playerB;
+    delete playerW;
+}

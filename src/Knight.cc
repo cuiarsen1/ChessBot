@@ -1,7 +1,7 @@
 #include "Chessboard.h"
 #include "Knight.h"
 Knight::Knight(int row, int col, char name):
-        Piece(row, col, name), val{3} {
+        Piece(row, col, name) {
             if (isupper(name)) colour = 'w';
             else colour = 'b';
         }
@@ -25,17 +25,3 @@ int Knight::checkValidMove(int targetX, int targetY, Chessboard *component){
         return 0;
     }
 }
-
-/*
-//basically places a knight onto the chessboard
-char Knight::pieceAt(int row, int col) {
-    char currentPiece = component->pieceAt(row, col);
-    if (x == row && y == col){  
-        if (colour == 'w'){     //if piece is white
-            return 'N';
-        }
-        else return 'n'; 
-    }
-    return currentPiece;
-}
-*/

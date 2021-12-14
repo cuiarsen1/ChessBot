@@ -4,7 +4,7 @@
 using namespace std;
 
 Pawn::Pawn(int row, int col, char name):
-        Piece(row, col, name), val{1} {}
+        Piece(row, col, name) {}
 
 //Legal locations include one unit up (or two if row # valid) and diagonal ups
 int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
@@ -63,17 +63,3 @@ int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
     }
     return 0; //Should not reach here
 }
-
-/*
-//basically places a pawn onto the chessboard
-char Pawn::pieceAt(int row, int col) {
-    char currentPiece = component->pieceAt(row, col);
-    if (x == row && y == col){  
-        if (colour == 'w'){     //if piece is white
-            return 'P';
-        }
-        else return 'p'; 
-    }
-    return currentPiece;
-}
-*/

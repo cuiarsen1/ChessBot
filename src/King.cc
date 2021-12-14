@@ -29,17 +29,3 @@ int King::checkValidMove(int targetX, int targetY, Chessboard *component){
         return 0;
     }
 }
-
-/*
-//basically places a king onto the chessboard
-char King::pieceAt(int row, int col) {
-    char currentPiece = component->pieceAt(row, col);
-    if (x == row && y == col){ 
-        if (colour == 'w'){     //if piece is white
-            return 'K';
-        }
-        else return 'k'; 
-    }
-    return currentPiece;
-}
-*/

@@ -1,1 +1,1 @@
-Pawn.o: Pawn.cc Chessboard.h Pawn.h Piece.h
+Pawn.o: Pawn.cc Chessboard.h Subject.h Observer.h Pawn.h Piece.h

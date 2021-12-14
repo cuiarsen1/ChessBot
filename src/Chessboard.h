@@ -2,15 +2,18 @@
 #define __CHESSBOARD_H__
 #include <string>
 #include <vector>
+#include "Subject.h"
 
 class Piece;
+class TextObserver;
 
-class Chessboard {
+class Chessboard: public Subject {
 public:
    std::vector<Piece*> blackPieces;
    std::vector<Piece*> whitePieces;
    void newPiece(int x, int y, char name);
    void init(); //Sets position of the pieces
+   void reset(); //Used to clean all the pieces from the board after every match
    void removePiece(int x, int y);
    Piece *location(int x, int y);
    int move(int startX, int startY, int targetX, int targetY);
@@ -20,13 +23,4 @@ public:
    bool stalemate(char colour);
    ~Chessboard();
 };
-/*
- Square* board[8][8];
- public:
-  Chessboard();
-  ~Chessboard();
-  void printChessboard();
-  bool isOccupied(int x, int y);
-};
-*/
 #endif

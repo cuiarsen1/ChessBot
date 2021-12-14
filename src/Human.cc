@@ -26,11 +26,11 @@ bool Human::turn(Chessboard *component){
             //Before calling move, ensure the starting piece is of the Human's colour
             Piece *p = component->location(startX, startY);
             if (p == NULL){
-                cout << "Invalid start location! Try again.\n";
+                cout << "Invalid start location!\n";
                 continue;
             }
             if (p->colour != colour){
-                cout << "Invalid piece colour! Try again.\n";
+                cout << "Invalid piece colour!\n";
                 continue;
             }
             //Run the move to see the result
@@ -42,7 +42,7 @@ bool Human::turn(Chessboard *component){
                 return true;
             }
             else{
-                cout << "Invalid move! Try again.\n";
+                cout << "Invalid move!\n";
                 continue;
             }
         }
@@ -50,7 +50,7 @@ bool Human::turn(Chessboard *component){
             return false; //Quit the game
         }
         else{
-            cout << "Invalid command! Try again.\n";
+            cout << "Invalid in-game command!\n";
         }
     }
     return false; //Should not reach here

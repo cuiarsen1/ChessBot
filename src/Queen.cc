@@ -3,7 +3,7 @@
 using namespace std;
 
 Queen::Queen(int row, int col, char name):
-        Piece(row, col, name), val{9} {
+        Piece(row, col, name) {
             if (isupper(name)) colour = 'w';
             else colour = 'b';
         }
@@ -76,17 +76,3 @@ int Queen::checkValidMove(int targetX, int targetY, Chessboard *component){
         return 0;
     }
 }
-
-/*
-//basically places a Queen onto the chessboard
-char Queen::pieceAt(int row, int col) {
-    char currentPiece = component->pieceAt(row, col);
-    if (x == row && y == col){  
-        if (colour == 'w'){     //if piece is white
-            return 'Q';
-        }
-        else return 'q'; 
-    }
-    return currentPiece;
-}
-*/

@@ -2,24 +2,10 @@
 #include "Bishop.h"
 
 Bishop::Bishop(int row, int col, char name):
-        Piece(row, col, name), val{3} {
+        Piece(row, col, name) {
             if (isupper(name)) colour = 'w';
             else colour = 'b';
         }
-
-/*
-//basically places a bishop onto the chessboard
-char Bishop::pieceAt(int row, int col) {
-    char currentPiece = component->pieceAt(row, col);
-    if (x == row && y == col){  
-        if (colour == 'w'){     //if piece is white
-            return 'B';
-        }
-        else return 'b'; 
-    }
-    return currentPiece;
-}
-*/
 
 //Legal locations only include those on the diagonal of current (x, y) location
 int Bishop::checkValidMove(int targetX, int targetY, Chessboard *component){
@@ -72,8 +58,3 @@ int Bishop::checkValidMove(int targetX, int targetY, Chessboard *component){
         else return 0;
     }
 }
-/*char Bishop::moveTo(int row, int col){
-    if (checkValidMove(x,y,row,col)){
-        
-    }
-}*/

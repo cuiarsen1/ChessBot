@@ -3,7 +3,7 @@
 using namespace std;
 
 Rook::Rook(int row, int col, char name):
-        Piece(row, col, name), val{5} {
+        Piece(row, col, name) {
             if (isupper(name)) colour = 'w';
             else colour = 'b';
         }
@@ -46,17 +46,3 @@ int Rook::checkValidMove(int targetX, int targetY, Chessboard *component){
         else return 0;
     }
 }
-
-/*
-//basically places a knight onto the chessboard
-char Rook::pieceAt(int row, int col) {
-    char currentPiece = component->pieceAt(row, col);
-    if (x == row && y == col){  
-        if (colour == 'w'){     //if piece is white
-            return 'R';
-        }
-        else return 'r'; 
-    }
-    return currentPiece;
-}
-*/

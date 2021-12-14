@@ -1,1 +1,1 @@
-King.o: King.cc Chessboard.h King.h Piece.h
+King.o: King.cc Chessboard.h Subject.h Observer.h King.h Piece.h

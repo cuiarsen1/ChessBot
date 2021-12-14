@@ -1,1 +1,1 @@
-Bishop.o: Bishop.cc Chessboard.h Bishop.h Piece.h
+Bishop.o: Bishop.cc Chessboard.h Subject.h Observer.h Bishop.h Piece.h
