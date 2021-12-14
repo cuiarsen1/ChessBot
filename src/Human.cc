@@ -19,16 +19,41 @@ bool Human::turn(Chessboard *component){
         string cmd;
         iss >> cmd;
         if (cmd == "move"){
-            string startInput, targetInput;
-            iss >> startInput >> targetInput;
-            char startYLetter, targetYLetter;
-            int startXNumber, targetXNumber;
-            cin >> startYLetter >> startXNumber >> targetYLetter >> targetXNumber;
+            string pos1, pos2;
+            iss >> pos1 >> pos2;
+            if (pos1.length() != 2 || pos2.length() != 2){
+                cout << "Invalid position!\n";
+                continue;
+            }
+            int startX = char(pos1[1]) - '0';
+            int startY = char(pos1[0]) - 'a';
+            //Next, check validity of startY
+            if (!(startY >= 0 && startY <= 7)){
+                cout << "Invalid column letter!\n";
+                continue;
+            }
+            //Finally, check validity of startX
+            //It's also a position, then 1 <= startX <= 8 for the input
+            if (!(startX >= 1 && startX <= 8)){
+                cout << "Invalid row letter!\n";
+                continue;
+            }
+            int targetX = char(pos2[1]) - '0';
+            int targetY = char(pos2[0]) - 'a';
+            //Next, check validity of targetY
+            if (!(targetY >= 0 && targetY <= 7)){
+                cout << "Invalid column letter!\n";
+                continue;
+            }
+            //Finally, check validity of targetX
+            //It's also a position, then 1 <= targetX <= 8 for the input
+            if (!(targetX >= 1 && targetX <= 8)){
+                cout << "Invalid row letter!\n";
+                continue;
+            }
             //Next, adjust the values so it matches the chessboard indices
-            int startX = 8 - startXNumber;
-            int startY = startYLetter - 'a';
-            int targetX = 8 - targetXNumber;
-            int targetY = targetYLetter - 'a';
+            startX = 8 - startX;
+            targetX = 8 - targetX;
             //Before calling move, ensure the starting piece is of the Human's colour
             Piece *p = component->location(startX, startY);
             if (p == NULL){
@@ -44,7 +69,7 @@ bool Human::turn(Chessboard *component){
             //If non-zero move, the move was successful
             if (result != 0){
                 cout << (colour == 'b' ? "Black" : "White") << " played ";
-                cout << startYLetter << startXNumber << " to " << targetYLetter << targetXNumber << endl;
+                cout << pos1 << " to " << pos2 << endl;
                 return true;
             }
             else{

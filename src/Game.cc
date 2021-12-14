@@ -31,7 +31,7 @@ void Game::interact(){
     //NOTE: to avoid cases such as "game human", where some input is missing,
     //but with "game" expecting one more input, then it reads takes the command on the next
     //line as the second parameter, I will use istringstream to handle user inputs.
-    string interactLine = " ";
+    string interactLine;
     while (getline(cin, interactLine)){
         istringstream iss(interactLine);
         string interactCommand;
@@ -42,7 +42,7 @@ void Game::interact(){
         }
         else if (interactCommand == "game"){
             //First get the players in the game
-            string whiteText = " ", blackText = " "; //Default values space to avoid errors
+            string whiteText, blackText;
             iss >> whiteText >> blackText;
             //First, make sure black given inputs are valid players
             //So cases such as "game human ai1" does not create a human player then throw error
@@ -71,14 +71,13 @@ void Game::interact(){
             inGame();
         }
         else{
-            cout << "DEBUG <" << interactCommand << ">\n";
             cout << "Invalid command!\n";
         }
     }
 }
 
 void Game::setup(){
-    string setupLine = " ";
+    string setupLine;
     while (getline(cin, setupLine)){
         istringstream iss(setupLine);
         string setupCommand;
@@ -152,7 +151,7 @@ void Game::setup(){
         }
         else if (setupCommand == "colour"){
             //Set which side goes first
-            char colourChar = ' '; //Default value space to avoid errors
+            char colourChar; //Default value space to avoid errors
             iss >> colourChar;
             //Input colour must be one of white and black
             if (colourChar != 'w' && colourChar != 'b'){
@@ -187,7 +186,7 @@ void Game::inGame(){
     //Unlike setup, which would only exit when the user calls "done",
     //inGame exits when the game ends with one side winning, or a stalemate only
     //In other words, whether or not the function exits does not depend on user input
-    string gameLine = " ";
+    string gameLine;
     while (!gameOver){
         //Render the board before every move, so the player knows the state
         component->renderObservers();
@@ -251,7 +250,7 @@ void Game::restart(){
 }
 
 Game::~Game(){
-    //Delete the studio and the two players
+    //Delete the observers, chessboard and the two players
     delete TO;
     delete component;
     delete playerB;
