@@ -5,8 +5,7 @@
 #include <iostream>
 #include <vector>
 #include <set>
-#include <float.h>
-#include <math.h>
+#include <limits.h>
 using namespace std;
 
 vector<char> validPromotions{'q', 'n', 'r', 'b'};
@@ -444,13 +443,13 @@ void Computer::level3(Chessboard *component){
 //Pawn 1, Knight 3, Bishop 3, Rook 5, Queen 9, King 10000 (theoretical)
 //Check is given a value of 4, as a safe player usually wouldn't sacrifice queen/rook for a check
 //NOTE: if capture, subtract the value of the piece taken out
-//Have a third vector of doubles (other than start and target) for move score
+//Have a third vector of integers (other than start and target) for move score
 //Loop through the vector and find the minimum score (safest)
 //Finally, choose a random move from all moves with score <= ceil(minimum score)
 void Computer::level4(Chessboard *component){
     vector<pair<int, int>> start;
     vector<pair<int, int>> target;
-    vector<double> score;
+    vector<int> score;
     if (colour == 'b'){
         //Loop through all moves
         for (Piece *p: component->blackPieces){
@@ -460,19 +459,73 @@ void Computer::level4(Chessboard *component){
                 //Perform the move onto the unoccupied spot
                 p->setPiece(i.first, i.second);
                 //Next, calculate score
-                double tempScore = 0;
-                int enemyDecisions = 0;
+                int tempScore = 0;
                 for (Piece *enemy: component->whitePieces){
                     //Only consider captures
                     for (auto j: enemy->findCaptures(component)){
                         //Add the score of the piece being captured
                         tempScore += component->location(j.first, j.second)->value;
-                        ++enemyDecisions;
                     }
-                    //Finally, add all enemy non-attack decision, as they are also valid turns
-                    enemyDecisions += enemy->findMoves(component).size();
                 }
-                tempScore /= double(enemyDecisions); //Expected value
+                //Since this is from our non-attack decision, there is nothing to subtract
+                //However, a check is possible (value 4)
+                if (component->check('w')) tempScore -= 4;
+                //Put the piece back
+                p->setPiece(px, py);
+                //Finally, add to the total moves
+                start.emplace_back(px, py);
+                target.emplace_back(i.first, i.second);
+                score.push_back(tempScore);
+                
+            }
+            //Next, the captures
+            vector<pair<int, int>> pCaptures = p->findCaptures(component);
+            for (auto i: pCaptures){
+                //Try the capture
+                Piece *captured = component->location(i.first, i.second);
+                captured->setPiece(-1, -1);
+                p->setPiece(i.first, i.second);
+                //Calculate score
+                int tempScore = 0;
+                for (Piece *enemy: component->whitePieces){
+                    if (enemy == captured) continue; //Skip the supposedly eaten piece
+                    //Only consider captures
+                    for (auto j: enemy->findCaptures(component)){
+                        //Add the score of the piece being captured
+                        tempScore += component->location(j.first, j.second)->value;
+                    }
+                }
+                //Since this is an attack, we subtract the difference between captured and p
+                tempScore -= (captured->value - p->value);
+                //A check is possible (value 4)
+                if (component->check('w')) tempScore -= 4;
+                //Put the pieces back
+                p->setPiece(px, py);
+                captured->setPiece(i.first, i.second);
+                //Finally, add to the total moves
+                start.emplace_back(px, py);
+                target.emplace_back(i.first, i.second);
+                score.push_back(tempScore);
+            }
+        }
+    }
+    else{
+        //Loop through all moves
+        for (Piece *p: component->whitePieces){
+            int px = p->x, py = p->y;
+            vector<pair<int, int>> pMoves = p->findMoves(component);
+            for (auto i: pMoves){
+                //Perform the move onto the unoccupied spot
+                p->setPiece(i.first, i.second);
+                //Next, calculate score
+                int tempScore = 0;
+                for (Piece *enemy: component->blackPieces){
+                    //Only consider captures
+                    for (auto j: enemy->findCaptures(component)){
+                        //Add the score of the piece being captured
+                        tempScore += component->location(j.first, j.second)->value;
+                    }
+                }
                 //Since this is from our non-attack decision, there is nothing to subtract
                 //However, a check is possible (value 4)
                 if (component->check('w')) tempScore -= 4;
@@ -491,19 +544,15 @@ void Computer::level4(Chessboard *component){
                 captured->setPiece(-1, -1);
                 p->setPiece(i.first, i.second);
                 //Calculate score
-                double tempScore = 0;
-                int enemyDecisions = 0;
-                for (Piece *enemy: component->whitePieces){
+                int tempScore = 0;
+                for (Piece *enemy: component->blackPieces){
+                    if (enemy == captured) continue; //Skip the supposedly eaten piece
                     //Only consider captures
                     for (auto j: enemy->findCaptures(component)){
                         //Add the score of the piece being captured
                         tempScore += component->location(j.first, j.second)->value;
-                        ++enemyDecisions;
                     }
-                    //Finally, add all enemy non-attack moves, as they are also valid turns
-                    enemyDecisions += enemy->findMoves(component).size();
                 }
-                tempScore /= double(enemyDecisions); //Expected value
                 //Since this is an attack, we subtract the difference between captured and p
                 tempScore -= (captured->value - p->value);
                 //A check is possible (value 4)
@@ -517,33 +566,33 @@ void Computer::level4(Chessboard *component){
                 score.push_back(tempScore);
             }
         }
-        //Find minimum value from scores vector
-        double minScore = DBL_MAX;
-        for (double s: score) minScore = min(minScore, s);
-        //Finally, have a vector track indices of all moves with score less than ceil(minScore)
-        vector<int> minIndices;
-        for (int i = 0; i < int(target.size()); ++i){
-            if (score[i] <= ceil(minScore)) minIndices.push_back(i);
-        }
-        //Choose random index of minIndices's length
-        int index = rand() % int(minIndices.size());
-        //Make the move
-        int startX = start[index].first;
-        int startY = start[index].second;
-        int targetX = target[index].first;
-        int targetY = target[index].second;
-        int status = component->move(startX, startY, targetX, targetY);
-        //Output the move
-        cout << ((colour == 'b') ? "Black" : "White") << " played ";
-        cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
-        //Check promotion
-        if (status == 3){
-            //Always choose queen for promotion
-            char tempPromotion = 'q';
-            //Set it to correct colour
-            if (colour == 'w') tempPromotion = toupper(tempPromotion);
-            component->promote(targetX, targetY, tempPromotion);
-            cout << "Promoted to queen\n";
-        }
+    }
+    //Find minimum value from scores vector
+    int minScore = INT_MAX;
+    for (int s: score) minScore = min(minScore, s);
+    //Finally, have a vector track indices of all moves with score less than ceil(minScore)
+    vector<int> minIndices;
+    for (int i = 0; i < int(target.size()); ++i){
+        if (score[i] == minScore) minIndices.push_back(i);
+    }
+    //Choose random index of minIndices's length
+    int index = rand() % int(minIndices.size());
+    //Make the move
+    int startX = start[minIndices[index]].first;
+    int startY = start[minIndices[index]].second;
+    int targetX = target[minIndices[index]].first;
+    int targetY = target[minIndices[index]].second;
+    int status = component->move(startX, startY, targetX, targetY);
+    //Output the move
+    cout << ((colour == 'b') ? "Black" : "White") << " played ";
+    cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
+    //Check promotion
+    if (status == 3){
+        //Always choose queen for promotion
+        char tempPromotion = 'q';
+        //Set it to correct colour
+        if (colour == 'w') tempPromotion = toupper(tempPromotion);
+        component->promote(targetX, targetY, tempPromotion);
+        cout << "Promoted to queen\n";
     }
 }
