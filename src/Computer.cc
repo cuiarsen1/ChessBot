@@ -518,8 +518,8 @@ void Computer::level4(Chessboard *component){
                         tempScore += component->location(j.first, j.second)->value;
                     }
                 }
-                //Since this is an attack, we subtract the difference between captured and p
-                tempScore -= (captured->value - p->value);
+                //Since this is an attack, we subtract the difference of captured
+                tempScore -= captured->value;
                 //A check is possible (value 4)
                 if (component->check('w')) tempScore -= 4;
                 //Put the pieces back
