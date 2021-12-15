@@ -8,3 +8,6 @@ replaceking
 replacesame
 addpawn
 invalidpawn
+kingsetup
+4moves
+rookmate

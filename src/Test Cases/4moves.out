@@ -1,0 +1,72 @@
++abcdefgh
+8rnbqkbnr
+7pppppppp
+6        
+5        
+4        
+3        
+2PPPPPPPP
+1RNBQKBNR
+White's turn!
+White played e2 to e4
++abcdefgh
+8rnbqkbnr
+7pppppppp
+6        
+5        
+4    P   
+3        
+2PPPP PPP
+1RNBQKBNR
+Black's turn!
+Black played e7 to e5
++abcdefgh
+8rnbqkbnr
+7pppp ppp
+6        
+5    p   
+4    P   
+3        
+2PPPP PPP
+1RNBQKBNR
+White's turn!
+White played f1 to c4
++abcdefgh
+8rnbqkbnr
+7pppp ppp
+6        
+5    p   
+4  B P   
+3        
+2PPPP PPP
+1RNBQK NR
+Black's turn!
+Black played a7 to a6
++abcdefgh
+8rnbqkbnr
+7 ppp ppp
+6p       
+5    p   
+4  B P   
+3        
+2PPPP PPP
+1RNBQK NR
+White's turn!
+White played d1 to h5
++abcdefgh
+8rnbqkbnr
+7 ppp ppp
+6p       
+5    p  Q
+4  B P   
+3        
+2PPPP PPP
+1RNB K NR
+Black's turn!
+Black is in check!
+Invalid move!
+Invalid piece colour!
+Black resigns!
+Final score:
+White: 0
+Black: 0
