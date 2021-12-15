@@ -6,6 +6,7 @@
 #include <vector>
 #include <set>
 #include <limits.h>
+#include <sstream>
 using namespace std;
 
 vector<char> validPromotions{'q', 'n', 'r', 'b'};
@@ -13,12 +14,41 @@ vector<char> validPromotions{'q', 'n', 'r', 'b'};
 Computer::Computer(char colour, int level): Player(colour), level{level} {}
 
 bool Computer::turn(Chessboard *component){
-    if (level == 1) level1(component);
-    else if (level == 2) level2(component);
-    else if (level == 3) level3(component);
-    else if (level == 4) level4(component);
-    return true; //As the computer never resigns, the move would always be valid
-    //In addition, the cases of no move available are handled by the initial checks in game
+    string turnLine;
+    while (getline(cin, turnLine)){
+        istringstream iss(turnLine);
+        string cmd;
+        iss >> cmd;
+        if (cmd == "help"){
+            //Display all commands
+            cout << "-------------------------------------------------------------------\n";
+            cout << "Available commands:\n\n";
+            cout << "> move [start position] [end position]\n";
+            cout << "PURPOSE: move the piece at the start position to the end position\n";
+            cout << "If the player is a computer, calling move suffices\n";
+            cout << "In the case of a pawn promotion,\n";
+            cout << "add a [piece] argument at the end to specify the promotion\n";
+            cout << "Example: move g1 f3\n\n";
+            cout << "> resign\n";
+            cout << "PURPOSE: Resign and exit the game\n";
+            cout << "Example: resign to exit and count as a loss to the current player\n";
+            cout << "-------------------------------------------------------------------\n";
+        }
+        else if (cmd == "move"){
+            if (level == 1) level1(component);
+            else if (level == 2) level2(component);
+            else if (level == 3) level3(component);
+            else if (level == 4) level4(component);
+            return true; //As the computer never resigns, the move would always be valid       
+        }
+        else if (cmd == "resign"){
+            return false; //Quit the game for the computer
+        }
+        else{
+            cout << "Invalid in-game command!\n";
+        }
+    }
+    return false; //Should not reach here
 }
 
 void Computer::level1(Chessboard *component){

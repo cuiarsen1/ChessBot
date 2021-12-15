@@ -38,7 +38,21 @@ void Game::interact(){
         istringstream iss(interactLine);
         string interactCommand;
         iss >> interactCommand;
-        if (interactCommand == "setup"){
+        if (interactCommand == "help"){
+            //Display all commands
+            cout << "-----------------------------------------------------------------------------------------\n";
+            cout << "Available commands:\n\n";
+            cout << "> setup\n";
+            cout << "PURPOSE: Enter setup mode, where you may set up the initial board configurations\n";
+            cout << "If a game hasn't started, you may call setup multiple times to re-edit the board\n";
+            cout << "Example: setup to enter setup mode\n\n";
+            cout << "> game [white player] [black player]\n";
+            cout << "PURPOSE: Start a game with the given two players\n";
+            cout << "where each player can be one of [human|computer1|computer2|computer3|computer4]\n";
+            cout << "Example: game computer3 human to start a game with computer3 as white and human as black\n";
+            cout << "-----------------------------------------------------------------------------------------\n";
+        }
+        else if (interactCommand == "setup"){
             custom = true;
             setup();
         }
@@ -86,7 +100,42 @@ void Game::setup(){
         istringstream iss(setupLine);
         string setupCommand;
         iss >> setupCommand;
-        if (setupCommand == "+"){
+        if (setupCommand == "help"){
+            //Display all commands
+            cout << "--------------------------------------------------------------------------------\n";
+            cout << "Available setup commands:\n\n";
+            cout << "> + [Piece] [Location]\n";
+            cout << "PURPOSE: Add a piece to the given location\n";
+            cout << "where piece can be one of lowercase or uppercase [k|q|r|b|n|p]\n";
+            cout << "Use uppercase for white pieces, lowercase for black pieces\n";
+            cout << "where location consists of one character and one number\n";
+            cout << "Example: + B d7 to add a white bishop to d7\n\n";
+            cout << "> - [Location]\n";
+            cout << "PURPOSE: Remove any piece at the given location\n";
+            cout << "where location consists of one character and one number\n";
+            cout << "Example: - d7 to remove any piece at d7\n\n";
+            cout << "> = [colour]\n";
+            cout << "PURPOSE: Specify which side has the first move\n";
+            cout << "where colour is one of [w|b]\n";
+            cout << "By default, white has the first move\n";
+            cout << "Example: = b for black to have the first move\n\n";
+            cout << "> c\n";
+            cout << "PURPOSE: Toggle the rule of castling to be allowed\n";
+            cout << "Command may be called multiple times to flip the allowance\n";
+            cout << "By default, castling is allowed\n";
+            cout << "Example: c for castling to be disallowed if it was allowed beforehand\n\n";
+            cout << "> e\n";
+            cout << "PURPOSE: Toggle the rule of en passant to be allowed\n";
+            cout << "Command may be called multiple times to flip the allowance\n";
+            cout << "By default, en passant is allowed\n";
+            cout << "Example: c for en passant to be disallowed if it was allowed beforehand\n\n";
+            cout << "> done\n";
+            cout << "PURPOSE: save and exit setup mode\n";
+            cout << "Setup mode may only be exited if the configuration of the chess board is valid\n";
+            cout << "Example: done to exit setup mode\n";
+            cout << "--------------------------------------------------------------------------------\n";
+        }
+        else if (setupCommand == "+"){
             //Add piece
             char pieceChar;
             string pos;
@@ -106,7 +155,7 @@ void Game::setup(){
             }
             //Next, check validity of posY
             int posX = char(pos[1]) - '0';
-            int posY = char(pos[0]) - 'a';
+            int posY = tolower(char(pos[0])) - 'a';
             if (!(posY >= 0 && posY <= 7)){
                 cout << "Invalid column letter!\n";
                 continue;
@@ -136,7 +185,7 @@ void Game::setup(){
                 continue;
             }
             int posX = char(pos[1]) - '0';
-            int posY = char(pos[0]) - 'a';
+            int posY = tolower(char(pos[0])) - 'a';
             //Next, check validity of posY
             if (!(posY >= 0 && posY <= 7)){
                 cout << "Invalid column letter!\n";

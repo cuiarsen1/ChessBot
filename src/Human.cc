@@ -18,9 +18,25 @@ bool Human::turn(Chessboard *component){
         istringstream iss(turnLine);
         string cmd;
         iss >> cmd;
-        if (cmd == "move"){
+        if (cmd == "help"){
+            //Display all commands
+            cout << "-------------------------------------------------------------------\n";
+            cout << "Available commands:\n\n";
+            cout << "> move [start position] [end position]\n";
+            cout << "PURPOSE: move the piece at the start position to the end position\n";
+            cout << "If the player is a computer, calling move suffices\n";
+            cout << "In the case of a pawn promotion,\n";
+            cout << "add a [piece] argument at the end to specify the promotion\n";
+            cout << "Example: move g1 f3\n\n";
+            cout << "> resign\n";
+            cout << "PURPOSE: Resign and exit the game\n";
+            cout << "Example: resign to exit and count as a loss to the current player\n";
+            cout << "-------------------------------------------------------------------\n";
+        }
+        else if (cmd == "move"){
             string pos1, pos2;
-            iss >> pos1 >> pos2;
+            char promotion;
+            iss >> pos1 >> pos2 >> promotion;
             if (pos1.length() != 2 || pos2.length() != 2){
                 cout << "Invalid position!\n";
                 continue;
@@ -72,36 +88,19 @@ bool Human::turn(Chessboard *component){
                 cout << pos1 << " to " << pos2 << endl;
                 if (result == 3){
                     //Promotion
-                    bool donePromote = false;
-                    string promotePiece;
-                    while (!donePromote){
-                        cout << "Which piece to promote to? ";
-                        string promoteLine;
-                        getline(cin, promoteLine);
-                        istringstream iss(promoteLine);
-                        iss >> promotePiece;
-                        if (promotePiece == "queen"){
-                            component->promote(targetX, targetY, ((colour == 'b') ? 'q' : 'Q'));
-                            donePromote = true;
-                        }
-                        else if (promotePiece == "knight"){
-                            component->promote(targetX, targetY, ((colour == 'b') ? 'n' : 'N'));
-                            donePromote = true;
-                        }
-                        else if (promotePiece == "rook"){
-                            component->promote(targetX, targetY, ((colour == 'b') ? 'r' : 'R'));
-                            donePromote = true;
-                        }
-                        else if (promotePiece == "bishop"){
-                            component->promote(targetX, targetY, ((colour == 'b') ? 'b' : 'B'));
-                            donePromote = true;
-                        }
-                        else{
-                            cout << "Invalid promoted piece!\n";
-                        }
+                    //Ensure promotion piece is in the accepted list
+                    promotion = tolower(promotion);
+                    if (!(promotion == 'q' || promotion == 'r' || promotion == 'n' || promotion == 'b')){
+                        cout << "Invalid promoted piece!\n";
+                        continue;
                     }
+                    component->promote(targetX, targetY, ((colour == 'b') ? promotion : toupper(promotion)));
                     //Successful promotion
-                    cout << "Promoted to " << promotePiece << endl;
+                    cout << "Promoted to ";
+                    if (promotion == 'q') cout << "queen!\n";
+                    else if (promotion == 'r') cout << "rook!\n";
+                    else if (promotion == 'n') cout << "knight!\n";
+                    else cout << "bishop!\n";
                 }
                 return true;
             }
