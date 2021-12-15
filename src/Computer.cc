@@ -93,22 +93,27 @@ void Computer::level1(Chessboard *component){
     int startY = start[index].second;
     int targetX = target[index].first;
     int targetY = target[index].second;
-    int status = component->move(startX, startY, targetX, targetY);
+    //Choose a random piece for promotion
+    char tempPromotion = validPromotions[rand() % 4];
+    cout << "Promoted to ";
+    if (tempPromotion == 'q') cout << "queen\n";
+    else if (tempPromotion == 'n') cout << "knight\n";
+    else if (tempPromotion == 'r') cout << "rook\n";
+    else cout << "bishop\n";
+    //Set it to correct colour
+    if (colour == 'w') tempPromotion = toupper(tempPromotion);
+    int status = component->move(startX, startY, targetX, targetY, tempPromotion);
     //Output the move
     cout << ((colour == 'b') ? "Black" : "White") << " played ";
     cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
     //Check promotion
     if (status == 3){
-        //Choose a random piece for promotion
-        char tempPromotion = validPromotions[rand() % 4];
+        //Successful promotion
         cout << "Promoted to ";
         if (tempPromotion == 'q') cout << "queen\n";
         else if (tempPromotion == 'n') cout << "knight\n";
         else if (tempPromotion == 'r') cout << "rook\n";
         else cout << "bishop\n";
-        //Set it to correct colour
-        if (colour == 'w') tempPromotion = toupper(tempPromotion);
-        component->promote(targetX, targetY, tempPromotion);
     }
 }
 
@@ -196,19 +201,16 @@ void Computer::level2(Chessboard *component){
         int startY = LOWStart[index].second;
         int targetX = LOWTarget[index].first;
         int targetY = LOWTarget[index].second;
-        int status = component->move(startX, startY, targetX, targetY);
+        //Always choose queen for promotion
+        char tempPromotion = 'q';
+        //Set it to correct colour
+        if (colour == 'w') tempPromotion = toupper(tempPromotion);
+        int status = component->move(startX, startY, targetX, targetY, tempPromotion);
         //Output the move
         cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
         //Check promotion
-        if (status == 3){
-            //Always choose queen for promotion
-            char tempPromotion = 'q';
-            //Set it to correct colour
-            if (colour == 'w') tempPromotion = toupper(tempPromotion);
-            component->promote(targetX, targetY, tempPromotion);
-            cout << "Promoted to queen\n";
-        }
+        if (status == 3) cout << "Promoted to queen\n";
     }
     else{
         //Otherwise, only choose from the prioritized moves/captures
@@ -219,19 +221,16 @@ void Computer::level2(Chessboard *component){
         int startY = VIPStart[index].second;
         int targetX = VIPTarget[index].first;
         int targetY = VIPTarget[index].second;
-        int status = component->move(startX, startY, targetX, targetY);
+        //Always choose queen for promotion
+        char tempPromotion = 'q';
+        //Set it to correct colour
+        if (colour == 'w') tempPromotion = toupper(tempPromotion);
+        int status = component->move(startX, startY, targetX, targetY, tempPromotion);
         //Output the move
         cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
         //Check promotion
-        if (status == 3){
-            //Always choose queen for promotion
-            char tempPromotion = 'q';
-            //Set it to correct colour
-            if (colour == 'w') tempPromotion = toupper(tempPromotion);
-            component->promote(targetX, targetY, tempPromotion);
-            cout << "Promoted to queen\n";
-        }
+        if (status == 3) cout << "Promoted to queen\n";
     }
 }
 
@@ -424,19 +423,16 @@ void Computer::level3(Chessboard *component){
         int startY = VIPStart[index].second;
         int targetX = VIPTarget[index].first;
         int targetY = VIPTarget[index].second;
-        int status = component->move(startX, startY, targetX, targetY);
+        //Always choose queen for promotion
+        char tempPromotion = 'q';
+        //Set it to correct colour
+        if (colour == 'w') tempPromotion = toupper(tempPromotion);
+        int status = component->move(startX, startY, targetX, targetY, tempPromotion);
         //Output the move
         cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
         //Check promotion
-        if (status == 3){
-            //Always choose queen for promotion
-            char tempPromotion = 'q';
-            //Set it to correct colour
-            if (colour == 'w') tempPromotion = toupper(tempPromotion);
-            component->promote(targetX, targetY, tempPromotion);
-            cout << "Promoted to queen\n";
-        }
+        if (status == 3) cout << "Promoted to queen\n";
     }
     else{
         //There are no prioritized moves available at the moment
@@ -448,19 +444,16 @@ void Computer::level3(Chessboard *component){
         int startY = LOWStart[index].second;
         int targetX = LOWTarget[index].first;
         int targetY = LOWTarget[index].second;
-        int status = component->move(startX, startY, targetX, targetY);
+        //Always choose queen for promotion
+        char tempPromotion = 'q';
+        //Set it to correct colour
+        if (colour == 'w') tempPromotion = toupper(tempPromotion);
+        int status = component->move(startX, startY, targetX, targetY, tempPromotion);
         //Output the move
         cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
         //Check promotion
-        if (status == 3){
-            //Always choose queen for promotion
-            char tempPromotion = 'q';
-            //Set it to correct colour
-            if (colour == 'w') tempPromotion = toupper(tempPromotion);
-            component->promote(targetX, targetY, tempPromotion);
-            cout << "Promoted to queen\n";
-        }
+        if (status == 3) cout << "Promoted to queen\n";
     }
 }
 
@@ -612,17 +605,14 @@ void Computer::level4(Chessboard *component){
     int startY = start[minIndices[index]].second;
     int targetX = target[minIndices[index]].first;
     int targetY = target[minIndices[index]].second;
-    int status = component->move(startX, startY, targetX, targetY);
+    //Always choose queen for promotion
+    char tempPromotion = 'q';
+    //Set it to correct colour
+    if (colour == 'w') tempPromotion = toupper(tempPromotion);
+    int status = component->move(startX, startY, targetX, targetY, tempPromotion);
     //Output the move
     cout << ((colour == 'b') ? "Black" : "White") << " played ";
     cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
     //Check promotion
-    if (status == 3){
-        //Always choose queen for promotion
-        char tempPromotion = 'q';
-        //Set it to correct colour
-        if (colour == 'w') tempPromotion = toupper(tempPromotion);
-        component->promote(targetX, targetY, tempPromotion);
-        cout << "Promoted to queen\n";
-    }
+    if (status == 3) cout << "Promoted to queen\n";
 }

@@ -35,7 +35,7 @@ bool Human::turn(Chessboard *component){
         }
         else if (cmd == "move"){
             string pos1, pos2;
-            char promotion;
+            char promotion = ' ';
             iss >> pos1 >> pos2 >> promotion;
             if (pos1.length() != 2 || pos2.length() != 2){
                 cout << "Invalid position!\n";
@@ -67,6 +67,14 @@ bool Human::turn(Chessboard *component){
                 cout << "Invalid row letter!\n";
                 continue;
             }
+            //Promotion; check given promotion char
+            //Ensure promotion piece is in the accepted list (+ ' ' which implies no promotion input)
+            if (promotion != ' ') promotion = tolower(promotion);
+            if (!(promotion == ' ' || promotion == 'q' || promotion == 'r' || promotion == 'n' || promotion == 'b')){
+                cout << "Invalid promoted piece!\n";
+                continue;
+            }
+            if (colour == 'w' && promotion != ' ') promotion = toupper(promotion); //Fix case for promotion
             //Next, adjust the values so it matches the chessboard indices
             startX = 8 - startX;
             targetX = 8 - targetX;
@@ -81,22 +89,15 @@ bool Human::turn(Chessboard *component){
                 continue;
             }
             //Run the move to see the result
-            int result = component->move(startX, startY, targetX, targetY);
+            int result = component->move(startX, startY, targetX, targetY, promotion);
             //If non-zero move, the move was successful
             if (result != 0){
                 cout << ((colour == 'b') ? "Black" : "White") << " played ";
                 cout << pos1 << " to " << pos2 << endl;
                 if (result == 3){
-                    //Promotion
-                    //Ensure promotion piece is in the accepted list
-                    promotion = tolower(promotion);
-                    if (!(promotion == 'q' || promotion == 'r' || promotion == 'n' || promotion == 'b')){
-                        cout << "Invalid promoted piece!\n";
-                        continue;
-                    }
-                    component->promote(targetX, targetY, ((colour == 'b') ? promotion : toupper(promotion)));
                     //Successful promotion
                     cout << "Promoted to ";
+                    promotion = tolower(promotion);
                     if (promotion == 'q') cout << "queen!\n";
                     else if (promotion == 'r') cout << "rook!\n";
                     else if (promotion == 'n') cout << "knight!\n";

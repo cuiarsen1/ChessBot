@@ -30,16 +30,18 @@ void Chessboard::removePiece(int x, int y){
     int index = 0;
     for (Piece *p: blackPieces){
         if (p->x == x && p->y == y){
-            blackPieces.erase(blackPieces.begin() + index);
             delete p;
+            blackPieces.erase(blackPieces.begin() + index);
+            return;
         }
         ++index;
     }
     index = 0;
     for (Piece *p: whitePieces){
         if (p->x == x && p->y == y){
-            whitePieces.erase(whitePieces.begin() + index);
             delete p;
+            whitePieces.erase(whitePieces.begin() + index);
+            return;
         }
         ++index;
     }
@@ -103,7 +105,7 @@ void Chessboard::promote(int x, int y, char name){
     newPiece(x, y, name);
 }
 
-int Chessboard::move(int startX, int startY, int targetX, int targetY){
+int Chessboard::move(int startX, int startY, int targetX, int targetY, char promotion){
     Piece *start = location(startX, startY);
     if (start == NULL) return 0;
     int status = start->checkValidMove(targetX, targetY, this);
@@ -117,15 +119,29 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
             start->setPiece(startX, startY);
             return 0;
         }
-        //Otherwise, successful; mark the bool of the piece to show it has moved
-        start->moved = true;
+        //Otherwise, successful
         //SPECIAL CASE: If the piece is a pawn, check promotion
         if (dynamic_cast<Pawn*>(start) != NULL){
             //The piece is a pawn; check column
-            if (start->colour == 'w' && start->x == 0) return 3;
-            if (start->colour == 'b' && start->x == 7) return 3;
+            if (start->colour == 'w' && start->x == 0){
+                if (promotion == ' '){ //No promotion input; revert move
+                    start->setPiece(startX, startY);
+                    return 0;
+                }
+                promote(targetX, targetY, promotion);
+                return 3; //Promoted
+            }
+            if (start->colour == 'b' && start->x == 7){
+                if (promotion == ' '){ //No promotion input; revert move
+                    start->setPiece(startX, startY);
+                    return 0;
+                }
+                promote(targetX, targetY, promotion);
+                return 3; //Promoted
+            }
             //Otherwise, the pawn has not reached the opposite side of the board
         }
+        start->moved = true;
         return 1; //Otherwise, it's a normal pawn move
     }
     if (status == 2){
@@ -146,18 +162,39 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
             return 0;
         }
         else{
+            //SPECIAL CASE: If the piece is a pawn, check promotion
+            if (dynamic_cast<Pawn*>(start) != NULL){
+                //The piece is a pawn; check column
+                if (start->colour == 'w' && start->x == 0){
+                    if (promotion == ' '){ //No promotion input; revert move
+                        start->setPiece(startX, startY);
+                        oldTarget->setPiece(targetX, targetY);
+                        return 0;
+                    }
+                    promote(targetX, targetY, promotion);
+                    //Valid capture; delete old target
+                    //Stored at the temporary (-1, -1) position
+                    removePiece(-1, -1);
+                    return 3; //Promoted
+                }
+                if (start->colour == 'b' && start->x == 7){
+                    if (promotion == ' '){ //No promotion input; revert move
+                        start->setPiece(startX, startY);
+                        oldTarget->setPiece(targetX, targetY);
+                        return 0;
+                    }
+                    promote(targetX, targetY, promotion);
+                    //Valid capture; delete old target
+                    //Stored at the temporary (-1, -1) position
+                    removePiece(-1, -1);
+                }
+                //Otherwise, the pawn has not reached the opposite side of the board
+            }
             //Valid capture; delete old target
             //Stored at the temporary (-1, -1) position
             removePiece(-1, -1);
             //Since piece has moved, update the boolean
             start->moved = true;
-            //SPECIAL CASE: If the piece is a pawn, check promotion
-            if (dynamic_cast<Pawn*>(start) != NULL){
-                //The piece is a pawn; check column
-                if (start->colour == 'w' && start->x == 0) return 3;
-                if (start->colour == 'b' && start->x == 7) return 3;
-                //Otherwise, the pawn has not reached the opposite side of the board
-            }
             return 2;
         }
     }

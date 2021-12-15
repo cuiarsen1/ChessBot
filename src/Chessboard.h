@@ -20,7 +20,7 @@ public:
    void removePiece(int x, int y);
    void promote(int x, int y, char name); //Promote pawn at given position
    Piece *location(int x, int y);
-   int move(int startX, int startY, int targetX, int targetY);
+   int move(int startX, int startY, int targetX, int targetY, char promotion);
    bool verify();
    bool check(char colour);
    bool checkmate(char colour);
