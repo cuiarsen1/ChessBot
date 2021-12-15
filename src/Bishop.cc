@@ -32,7 +32,7 @@ int Bishop::checkValidMove(int targetX, int targetY, Chessboard *component){
             if (tempP != NULL) return 0;
         }
     }
-    else if (x > targetX && y < targetY){
+    else if (x > targetX && y > targetY){
         for (int i = 1; i < diffX; i++){
             int tempX = x - i, tempY = y - i;
             Piece *tempP = component->location(tempX, tempY);

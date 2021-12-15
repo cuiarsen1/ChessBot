@@ -1,5 +1,6 @@
 #include "Chessboard.h"
 #include "Queen.h"
+#include <iostream>
 using namespace std;
 
 Queen::Queen(int row, int col, char name): Piece(row, col, name) {}
@@ -15,6 +16,7 @@ int Queen::checkValidMove(int targetX, int targetY, Chessboard *component){
         //If new location not on current (x, y) location's diagonal, it's invalid
         if (diffX != diffY) return 0;
         //Next, check if the path to new location isn't blocked off
+        cout << "DEBUG queen " << x << " " << y << " " << targetX << " " << targetY << endl;
         if (x < targetX && y < targetY){
             for (int i = 1; i < diffX; i++){
                 int tempX = x + i, tempY = y + i;
@@ -33,7 +35,7 @@ int Queen::checkValidMove(int targetX, int targetY, Chessboard *component){
                 if (component->location(tempX, tempY) != NULL) return 0;
             }
         }
-        else if (x > targetX && y < targetY){
+        else if (x > targetX && y > targetY){
             for (int i = 1; i < diffX; i++){
                 int tempX = x - i, tempY = y - i;
                 if (component->location(tempX, tempY) != NULL) return 0;
