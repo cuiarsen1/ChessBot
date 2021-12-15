@@ -13,8 +13,8 @@ void GraphicalObserver::render(){
     //draw chessboard
     int x = 0; int y = 0; int width = 50; int height = 50;
     bool switchColour = false;
-    for (int i = 0; i < 8; i++){
-        for (int j = 0; j < 8; j++){
+    for (int i = 0; i < 8; ++i){
+        for (int j = 0; j < 8; ++j){
             if (!switchColour){
                 w.fillRectangle(x, y, width, height, Xwindow::White);
                 switchColour = true;
@@ -32,8 +32,8 @@ void GraphicalObserver::render(){
 
     int offsetX = width/2-2; int offsetY = height/2-3;
     x = 0; y = height;
-    for (int i = 0; i < 8; i++){
-      for (int j = 0; j < 8; j++){
+    for (int i = 0; i < 8; ++i){
+      for (int j = 0; j < 8; ++j){
         Piece* temp = component->location(i, j);      
         if (temp == NULL){
            x += width;

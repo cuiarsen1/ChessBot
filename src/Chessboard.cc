@@ -31,7 +31,7 @@ void Chessboard::removePiece(int x, int y){
             blackPieces.erase(blackPieces.begin() + index);
             delete p;
         }
-        index++;
+        ++index;
     }
     index = 0;
     for (Piece *p: whitePieces){
@@ -39,7 +39,7 @@ void Chessboard::removePiece(int x, int y){
             whitePieces.erase(whitePieces.begin() + index);
             delete p;
         }
-        index++;
+        ++index;
     }
     //If the piece is not found, no action is taken
 }
@@ -57,7 +57,7 @@ void Chessboard::init(){
     newPiece(0, 5, 'b');
     newPiece(0, 1, 'n');
     newPiece(0, 6, 'n');
-    for (int i = 8; i < 16; i++) newPiece(1, i - 8, 'p');
+    for (int i = 8; i < 16; ++i) newPiece(1, i - 8, 'p');
     newPiece(7, 4, 'K');
     newPiece(7, 3, 'Q');
     newPiece(7, 0, 'R');
@@ -66,7 +66,7 @@ void Chessboard::init(){
     newPiece(7, 5, 'B');
     newPiece(7, 1, 'N');
     newPiece(7, 6, 'N');
-    for (int i = 8; i < 16; i++) newPiece(6, i - 8, 'P');
+    for (int i = 8; i < 16; ++i) newPiece(6, i - 8, 'P');
 }
 
 void Chessboard::reset(){

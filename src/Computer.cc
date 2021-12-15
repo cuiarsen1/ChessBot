@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 #include <set>
+#include <float.h>
+#include <math.h>
 using namespace std;
 
 vector<char> validPromotions{'q', 'n', 'r', 'b'};
@@ -433,247 +435,115 @@ void Computer::level3(Chessboard *component){
     }
 }
 
+//Level 4: GLOBAL DEFENSIVE
+//Strategy: consider the concept of a safe move/capture
+//After performing the play, check the state of the chessboard
+//Total the sum of all own targetable pieces, and divide by
+//the total number of enemy moves available (pMoves + pCaptures) so that it
+//represents the expected value of the points own player loses in next opponent turn
+//Pawn 1, Knight 3, Bishop 3, Rook 5, Queen 9, King 10000 (theoretical)
+//Check is given a value of 4, as a safe player usually wouldn't sacrifice queen/rook for a check
+//NOTE: if capture, subtract the value of the piece taken out
+//Have a third vector of doubles (other than start and target) for move score
+//Loop through the vector and find the minimum score (safest)
+//Finally, choose a random move from all moves with score <= ceil(minimum score)
 void Computer::level4(Chessboard *component){
-    //Strategy: prioritize "safe" moves/captures/checks
-    //Get all captures & moves similar to level 2
-    //For each element, loop through all enemy pieces and try capturing the piece
-    //Note: before trying the capture, setPiece the piece to (targetx, targety) first
-    //If move = 2 (capture), then the move isn't safe
-    //If move = 0, then it's considered a safe move
-    //To prioritize the priority (lol), we will have three vectors this time
-    //High (safe checks/captures)
-    //mid (safe moves + unsafe checks)
-    //low (unsafe moves/captures)
-    vector<pair<int, int>> HighStart;
-    vector<pair<int, int>> HighTarget;
-    vector<pair<int, int>> MidStart;
-    vector<pair<int, int>> MidTarget;
-    vector<pair<int, int>> LowStart;
-    vector<pair<int, int>> LowTarget;
+    vector<pair<int, int>> start;
+    vector<pair<int, int>> target;
+    vector<double> score;
     if (colour == 'b'){
+        //Loop through all moves
         for (Piece *p: component->blackPieces){
             int px = p->x, py = p->y;
             vector<pair<int, int>> pMoves = p->findMoves(component);
             for (auto i: pMoves){
-                //Divide the cases so that moves that lead to check are prioritized
-                //Try making the move
+                //Perform the move onto the unoccupied spot
                 p->setPiece(i.first, i.second);
-                //If in check
-                if (component->check('w')){
-                    //The move is a check
-                    //Next, loop through all enemy pieces while the move is already made
-                    bool safe = true;
-                    for (Piece *q: component->whitePieces){
-                        //Get the outcome of theoretical move by opponent piece to
-                        //take out the original moved piece
-                        //Note that this can only be 0 or 2, as we know there's a piece
-                        //at (i.first, i.second)
-                        int tempMove = q->checkValidMove(i.first, i.second, component);
-                        if (tempMove == 2){
-                            safe = false;
-                            break;
-                        }
+                //Next, calculate score
+                double tempScore = 0;
+                int enemyDecisions = 0;
+                for (Piece *enemy: component->whitePieces){
+                    //Only consider captures
+                    for (auto j: enemy->findCaptures(component)){
+                        //Add the score of the piece being captured
+                        tempScore += component->location(j.first, j.second)->value;
+                        ++enemyDecisions;
                     }
-                    if (safe){
-                        //Safe check; high
-                        HighStart.emplace_back(px, py);
-                        HighTarget.emplace_back(i.first, i.second);
-                    }
-                    else{
-                        //Unsafe check; mid
-                        MidStart.emplace_back(px, py);
-                        MidTarget.emplace_back(i.first, i.second);
-                    }
-                    //Put the piece back
-                    p->setPiece(px, py);
+                    //Finally, add all enemy non-attack decision, as they are also valid turns
+                    enemyDecisions += enemy->findMoves(component).size();
                 }
-                else{
-                    //Otherwise, it's a non-prioritized move
-                    bool safe = true;
-                    for (Piece *q: component->whitePieces){
-                        int tempMove = q->checkValidMove(i.first, i.second, component);
-                        if (tempMove == 2){
-                            safe = false;
-                            break;
-                        }
-                    }
-                    if (safe){
-                        //Safe move; mid
-                        MidStart.emplace_back(px, py);
-                        MidTarget.emplace_back(i.first, i.second);
-                    }
-                    else{
-                        //Unsafe move; low
-                        LowStart.emplace_back(px, py);
-                        LowTarget.emplace_back(i.first, i.second);
-                    }
-                    //Put the piece back
-                    p->setPiece(px, py);
-                }
-            }
-            //The rest are captures
-            vector<pair<int, int>> pCaptures = p->findCaptures(component);
-            for (auto i: pCaptures){
-                bool safe = true;
-                for (Piece *q: component->whitePieces){
-                    int tempMove = q->checkValidMove(i.first, i.second, component);
-                    if (tempMove == 2){
-                        safe = false;
-                        break;
-                    }
-                }
-                if (safe){
-                    //Safe capture; high
-                    HighStart.emplace_back(px, py);
-                    HighTarget.emplace_back(i.first, i.second);
-                }
-                else{
-                    //Unsafe capture; low
-                    LowStart.emplace_back(px, py);
-                    LowTarget.emplace_back(i.first, i.second);
-                }
-            }
-        }
-    }
-    else{
-        for (Piece *p: component->whitePieces){
-            int px = p->x, py = p->y;
-            vector<pair<int, int>> pMoves = p->findMoves(component);
-            for (auto i: pMoves){
-                //Divide the cases so that moves that lead to check are prioritized
-                //Try making the move
-                p->setPiece(i.first, i.second);
-                //If in check
-                if (component->check('b')){
-                    //The move is a check
-                    //Next, loop through all enemy pieces while the move is already made
-                    bool safe = true;
-                    for (Piece *q: component->blackPieces){
-                        //Get the outcome of theoretical move by opponent piece to
-                        //take out the original moved piece
-                        //Note that this can only be 0 or 2, as we know there's a piece
-                        //at (i.first, i.second)
-                        int tempMove = q->checkValidMove(i.first, i.second, component);
-                        if (tempMove == 2){
-                            safe = false;
-                            break;
-                        }
-                    }
-                    if (safe){
-                        //Safe check; high
-                        HighStart.emplace_back(px, py);
-                        HighTarget.emplace_back(i.first, i.second);
-                    }
-                    else{
-                        //Unsafe check; mid
-                        MidStart.emplace_back(px, py);
-                        MidTarget.emplace_back(i.first, i.second);
-                    }
-                    //Put the piece back
-                    p->setPiece(px, py);
-                }
-                else{
-                    //Otherwise, it's a non-prioritized move
-                    bool safe = true;
-                    for (Piece *q: component->blackPieces){
-                        int tempMove = q->checkValidMove(i.first, i.second, component);
-                        if (tempMove == 2){
-                            safe = false;
-                            break;
-                        }
-                    }
-                    if (safe){
-                        //Safe move; mid
-                        MidStart.emplace_back(px, py);
-                        MidTarget.emplace_back(i.first, i.second);
-                    }
-                    else{
-                        //Unsafe move; low
-                        LowStart.emplace_back(px, py);
-                        LowTarget.emplace_back(i.first, i.second);
-                    }
-                    //Put the piece back
-                    p->setPiece(px, py);
-                }
-            }
-            //The rest are captures
-            vector<pair<int, int>> pCaptures = p->findCaptures(component);
-            for (auto i: pCaptures){
-                //Try the capture first
-                Piece *oldTarget = component->location(i.first, i.second);
-                oldTarget->setPiece(-1, -1);
-                p->setPiece(i.first, i.second);
-                bool safe = true;
-                for (Piece *q: component->blackPieces){
-                    int tempMove = q->checkValidMove(i.first, i.second, component);
-                    if (tempMove == 2){
-                        safe = false;
-                        break;
-                    }
-                }
-                if (safe){
-                    //Safe capture; high
-                    HighStart.emplace_back(px, py);
-                    HighTarget.emplace_back(i.first, i.second);
-                }
-                else{
-                    //Unsafe capture; low
-                    LowStart.emplace_back(px, py);
-                    LowTarget.emplace_back(i.first, i.second);
-                }
-                //Move the pieces back
+                tempScore /= double(enemyDecisions); //Expected value
+                //Since this is from our non-attack decision, there is nothing to subtract
+                //However, a check is possible (value 4)
+                if (component->check('w')) tempScore -= 4;
+                //Put the piece back
                 p->setPiece(px, py);
-                oldTarget->setPiece(i.first, i.second);
+                //Finally, add to the total moves
+                start.emplace_back(px, py);
+                target.emplace_back(i.first, i.second);
+                score.push_back(tempScore);
+            }
+            //Next, the captures
+            vector<pair<int, int>> pCaptures = p->findCaptures(component);
+            for (auto i: pCaptures){
+                //Try the capture
+                Piece *captured = component->location(i.first, i.second);
+                captured->setPiece(-1, -1);
+                p->setPiece(i.first, i.second);
+                //Calculate score
+                double tempScore = 0;
+                int enemyDecisions = 0;
+                for (Piece *enemy: component->whitePieces){
+                    //Only consider captures
+                    for (auto j: enemy->findCaptures(component)){
+                        //Add the score of the piece being captured
+                        tempScore += component->location(j.first, j.second)->value;
+                        ++enemyDecisions;
+                    }
+                    //Finally, add all enemy non-attack moves, as they are also valid turns
+                    enemyDecisions += enemy->findMoves(component).size();
+                }
+                tempScore /= double(enemyDecisions); //Expected value
+                //Since this is an attack, we subtract the difference between captured and p
+                tempScore -= (captured->value - p->value);
+                //A check is possible (value 4)
+                if (component->check('w')) tempScore -= 4;
+                //Put the pieces back
+                p->setPiece(px, py);
+                captured->setPiece(i.first, i.second);
+                //Finally, add to the total moves
+                start.emplace_back(px, py);
+                target.emplace_back(i.first, i.second);
+                score.push_back(tempScore);
             }
         }
-    }
-    if (HighTarget.size() != 0){
-        //High priority exists; choose from here
-        int index = rand() % int(HighTarget.size());
+        //Find minimum value from scores vector
+        double minScore = DBL_MAX;
+        for (double s: score) minScore = min(minScore, s);
+        //Finally, have a vector track indices of all moves with score less than ceil(minScore)
+        vector<int> minIndices;
+        for (int i = 0; i < int(target.size()); ++i){
+            if (score[i] <= ceil(minScore)) minIndices.push_back(i);
+        }
+        //Choose random index of minIndices's length
+        int index = rand() % int(minIndices.size());
         //Make the move
-        int startX = HighStart[index].first;
-        int startY = HighStart[index].second;
-        int targetX = HighTarget[index].first;
-        int targetY = HighTarget[index].second;
-        component->move(startX, startY, targetX, targetY);
+        int startX = start[index].first;
+        int startY = start[index].second;
+        int targetX = target[index].first;
+        int targetY = target[index].second;
+        int status = component->move(startX, startY, targetX, targetY);
         //Output the move
         cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
-    }
-    else if (MidTarget.size() != 0){
-        //Mid priority exists; choose from here
-        int index = rand() % int(MidTarget.size());
-        //Make the move
-        int startX = MidStart[index].first;
-        int startY = MidStart[index].second;
-        int targetX = MidTarget[index].first;
-        int targetY = MidTarget[index].second;
-        component->move(startX, startY, targetX, targetY);
-        //Output the move
-        cout << ((colour == 'b') ? "Black" : "White") << " played ";
-        cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
-    }
-    else{
-        //Only low priority exists
-        int index = rand() % int(LowTarget.size());
-        //Make the move
-        int startX = LowStart[index].first;
-        int startY = LowStart[index].second;
-        int targetX = LowTarget[index].first;
-        int targetY = LowTarget[index].second;
-        component->move(startX, startY, targetX, targetY);
-        //Output the move
-        cout << ((colour == 'b') ? "Black" : "White") << " played ";
-        cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
+        //Check promotion
+        if (status == 3){
+            //Always choose queen for promotion
+            char tempPromotion = 'q';
+            //Set it to correct colour
+            if (colour == 'w') tempPromotion = toupper(tempPromotion);
+            component->promote(targetX, targetY, tempPromotion);
+            cout << "Promoted to queen\n";
+        }
     }
 }
-
-//Level 5: GLOBAL DEFENSIVE
-//Strategy: consider the concept of a safe move/capture (NO CHECK PRIORITY)
-//After performing the play, check the state of the chessboard
-//Have a score variable track the sum of all own targetable pieces
-//Pawn 1, Knight 3, Bishop 3, Rook 5, Queen 9, King 10000 (theoretical)
-//NOTE: if capture, subtract the value of the piece taken out
-//Have a third vector (other than start and target) for move score
-//Loop through the vector and find the minimum score (safest)
-//Finally, choose a random move from all moves with score = minimum score

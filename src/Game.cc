@@ -9,7 +9,7 @@
 using namespace std;
 
 //Vectors for testing
-vector<string> validPlayers{"human", "computer1", "computer2", "computer3"};
+vector<string> validPlayers{"human", "computer1", "computer2", "computer3", "computer4"};
 vector<char> validPieces{'K', 'k', 'Q', 'q', 'R', 'r', 'B', 'b', 'N', 'n', 'P', 'p'};
 
 //Some notes to the structure of Game (for myself):
@@ -63,10 +63,12 @@ void Game::interact(){
             if (whiteText == "computer1") playerW = new Computer('w', 1);
             else if (whiteText == "computer2") playerW = new Computer('w', 2);
             else if (whiteText == "computer3") playerW = new Computer('w', 3);
+            else if (whiteText == "computer4") playerW = new Computer('w', 4);
             else playerW = new Human('w');
             if (blackText == "computer1") playerB = new Computer('b', 1);
             else if (blackText == "computer2") playerB = new Computer('b', 2);
             else if (blackText == "computer3") playerB = new Computer('b', 3);
+            else if (blackText == "computer4") playerB = new Computer('b', 4);
             else playerB = new Human('b');
             //If setup mode wasn't used, use the default chessboard
             if (!custom) component->init();
@@ -206,8 +208,8 @@ void Game::inGame(){
         if (component->checkmate(move)){
             gameOver = true;
             cout << "Checkmate! " << ((move == 'b') ? "White" : "Black") << " wins!\n";
-            if (move == 'b') whiteScore++;
-            else blackScore++;
+            if (move == 'b') ++whiteScore;
+            else ++blackScore;
             restart(); //Clear all memory used for current match
             break;
         }
@@ -223,7 +225,7 @@ void Game::inGame(){
             if (!result){
                 //Resignation
                 cout << "Black resigns!\n";
-                whiteScore++;
+                ++whiteScore;
                 gameOver = true;
             }
             //Otherwise, it was a valid move; switch sides for next move
@@ -237,7 +239,7 @@ void Game::inGame(){
             if (!result){
                 //Resignation
                 cout << "White resigns!\n";
-                blackScore++;
+                ++blackScore;
                 gameOver = true;
             }
             //Otherwise, it was a valid move; switch sides for next move
