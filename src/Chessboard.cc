@@ -154,6 +154,14 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
             return 2;
         }
     }
+    if (status == 3){
+        //Castling; we already know the ending state is not checked
+        //Thus, update the location of the king and rook completes the castle
+        start->setPiece(targetX, targetY); //King
+        Piece *tempRook = location(targetX, (targetY < startY) ? 0 : 7);
+        tempRook->setPiece(targetX, (targetY < startY) ? 3 : 5);
+        return 4; //3 is occupied by promotion
+    }
     return 0;
 }
 

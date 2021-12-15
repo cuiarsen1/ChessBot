@@ -163,7 +163,7 @@ void Game::setup(){
             move = colourChar;
             //Since the board is unaffected, the observers do not need to be notified
             //However, we should let the user know that the colour is updated
-            cout << (move == 'b' ? "Black" : "White") << " starts!\n";
+            cout << ((move == 'b') ? "Black" : "White") << " starts!\n";
         }
         else if (setupCommand == "done"){
             //Exit setup mode
@@ -191,7 +191,7 @@ void Game::inGame(){
     while (!gameOver){
         //Render the board before every move, so the player knows the state
         component->renderObservers();
-        cout << (move == 'b' ? "Black" : "White") << "'s turn!\n";
+        cout << ((move == 'b') ? "Black" : "White") << "'s turn!\n";
         //If current side is in stalemate
         if (component->stalemate(move)){
             gameOver = true;
@@ -204,7 +204,7 @@ void Game::inGame(){
         //Perform call to see if current side is in checkmate
         if (component->checkmate(move)){
             gameOver = true;
-            cout << "Checkmate! " << (move == 'b' ? "White" : "Black") << " wins!\n";
+            cout << "Checkmate! " << ((move == 'b') ? "White" : "Black") << " wins!\n";
             if (move == 'b') whiteScore++;
             else blackScore++;
             restart(); //Clear all memory used for current match
@@ -212,13 +212,14 @@ void Game::inGame(){
         }
         //If current side is in check
         else if (component->check(move)){
-            cout << (move == 'b' ? "Black" : "White") << " is in check!\n";
+            cout << ((move == 'b') ? "Black" : "White") << " is in check!\n";
         }
         if (move == 'b'){
             bool result = playerB->turn(component);
             if (!result){
                 //Resignation
                 cout << "Black resigns!\n";
+                whiteScore++;
                 gameOver = true;
             }
             //Otherwise, it was a valid move; switch sides for next move
@@ -229,6 +230,7 @@ void Game::inGame(){
             if (!result){
                 //Resignation
                 cout << "White resigns!\n";
+                blackScore++;
                 gameOver = true;
             }
             //Otherwise, it was a valid move; switch sides for next move

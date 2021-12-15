@@ -64,7 +64,7 @@ void Computer::level1(Chessboard *component){
     int targetY = target[index].second;
     int status = component->move(startX, startY, targetX, targetY);
     //Output the move
-    cout << (colour == 'b' ? "Black" : "White") << " played ";
+    cout << ((colour == 'b') ? "Black" : "White") << " played ";
     cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
     //Check promotion
     if (status == 3){
@@ -167,7 +167,7 @@ void Computer::level2(Chessboard *component){
         int targetY = LOWTarget[index].second;
         int status = component->move(startX, startY, targetX, targetY);
         //Output the move
-        cout << (colour == 'b' ? "Black" : "White") << " played ";
+        cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
         //Check promotion
         if (status == 3){
@@ -190,7 +190,7 @@ void Computer::level2(Chessboard *component){
         int targetY = VIPTarget[index].second;
         int status = component->move(startX, startY, targetX, targetY);
         //Output the move
-        cout << (colour == 'b' ? "Black" : "White") << " played ";
+        cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
         //Check promotion
         if (status == 3){
@@ -395,7 +395,7 @@ void Computer::level3(Chessboard *component){
         int targetY = VIPTarget[index].second;
         int status = component->move(startX, startY, targetX, targetY);
         //Output the move
-        cout << (colour == 'b' ? "Black" : "White") << " played ";
+        cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
         //Check promotion
         if (status == 3){
@@ -419,7 +419,7 @@ void Computer::level3(Chessboard *component){
         int targetY = LOWTarget[index].second;
         int status = component->move(startX, startY, targetX, targetY);
         //Output the move
-        cout << (colour == 'b' ? "Black" : "White") << " played ";
+        cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
         //Check promotion
         if (status == 3){
@@ -637,7 +637,7 @@ void Computer::level4(Chessboard *component){
         int targetY = HighTarget[index].second;
         component->move(startX, startY, targetX, targetY);
         //Output the move
-        cout << (colour == 'b' ? "Black" : "White") << " played ";
+        cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
     }
     else if (MidTarget.size() != 0){
@@ -650,7 +650,7 @@ void Computer::level4(Chessboard *component){
         int targetY = MidTarget[index].second;
         component->move(startX, startY, targetX, targetY);
         //Output the move
-        cout << (colour == 'b' ? "Black" : "White") << " played ";
+        cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
     }
     else{
@@ -663,7 +663,7 @@ void Computer::level4(Chessboard *component){
         int targetY = LowTarget[index].second;
         component->move(startX, startY, targetX, targetY);
         //Output the move
-        cout << (colour == 'b' ? "Black" : "White") << " played ";
+        cout << ((colour == 'b') ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
     }
 }

@@ -68,7 +68,7 @@ bool Human::turn(Chessboard *component){
             int result = component->move(startX, startY, targetX, targetY);
             //If non-zero move, the move was successful
             if (result != 0){
-                cout << (colour == 'b' ? "Black" : "White") << " played ";
+                cout << ((colour == 'b') ? "Black" : "White") << " played ";
                 cout << pos1 << " to " << pos2 << endl;
                 if (result == 3){
                     //Promotion
@@ -81,19 +81,19 @@ bool Human::turn(Chessboard *component){
                         istringstream iss(promoteLine);
                         iss >> promotePiece;
                         if (promotePiece == "queen"){
-                            component->promote(targetX, targetY, (colour == 'b' ? 'q' : 'Q'));
+                            component->promote(targetX, targetY, ((colour == 'b') ? 'q' : 'Q'));
                             donePromote = true;
                         }
                         else if (promotePiece == "knight"){
-                            component->promote(targetX, targetY, (colour == 'b' ? 'n' : 'N'));
+                            component->promote(targetX, targetY, ((colour == 'b') ? 'n' : 'N'));
                             donePromote = true;
                         }
                         else if (promotePiece == "rook"){
-                            component->promote(targetX, targetY, (colour == 'b' ? 'r' : 'R'));
+                            component->promote(targetX, targetY, ((colour == 'b') ? 'r' : 'R'));
                             donePromote = true;
                         }
                         else if (promotePiece == "bishop"){
-                            component->promote(targetX, targetY, (colour == 'b' ? 'b' : 'B'));
+                            component->promote(targetX, targetY, ((colour == 'b') ? 'b' : 'B'));
                             donePromote = true;
                         }
                         else{
