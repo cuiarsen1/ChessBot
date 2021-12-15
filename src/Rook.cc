@@ -2,11 +2,7 @@
 #include "Rook.h"
 using namespace std;
 
-Rook::Rook(int row, int col, char name):
-        Piece(row, col, name) {
-            if (isupper(name)) colour = 'w';
-            else colour = 'b';
-        }
+Rook::Rook(int row, int col, char name): Piece(row, col, name) {}
 
 //Legal locations include horizontal/vertical moves
 int Rook::checkValidMove(int targetX, int targetY, Chessboard *component){

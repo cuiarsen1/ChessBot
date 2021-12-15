@@ -1,10 +1,7 @@
 #include "Chessboard.h"
 #include "King.h"
-King::King(int row, int col, char name):
-        Piece(row, col, name) {
-            if (isupper(name)) colour = 'w';
-            else colour = 'b';
-        }
+
+King::King(int row, int col, char name): Piece(row, col, name) {}
 
 //Legal locations include all eight adjacent locations near current (x, y)
 int King::checkValidMove(int targetX, int targetY, Chessboard *component){

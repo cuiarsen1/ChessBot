@@ -8,6 +8,10 @@ public:
     int x, y;
     char colour;
     char name; //The symbol of the piece
+    int value; //The piece's worth
+    //To check if a piece has been moved;
+    //This is used for pawn's first move, castling and en passant
+    bool moved;
     Piece(int x, int y, char name);
     void setPiece(int x, int y);
     std::vector<std::pair<int, int>> findMoves(Chessboard *component);

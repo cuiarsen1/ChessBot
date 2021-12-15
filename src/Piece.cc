@@ -3,7 +3,16 @@
 using namespace std;
 
 Piece::Piece(int x, int y, char name):
-        x{x}, y{y}, colour{isupper(name) ? 'w' : 'b'}, name{name} {}
+        x{x}, y{y}, name{name}, moved{false} {
+            colour = isupper(name) ? 'w' : 'b';
+            char temp = tolower(name);
+            if (temp == 'k') value = 10000;
+            else if (temp == 'q') value = 9;
+            else if (temp == 'r') value = 5;
+            else if (temp == 'n') value = 3;
+            else if (temp == 'b') value = 3;
+            else value = 1;
+        }
         
 Piece::~Piece() {}
 

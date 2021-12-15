@@ -12,6 +12,7 @@ private:
    void level1(Chessboard *component);
    void level2(Chessboard *component);
    void level3(Chessboard *component);
+   void level4(Chessboard *component);
 };
 
 #endif

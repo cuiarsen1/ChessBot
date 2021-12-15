@@ -70,6 +70,39 @@ bool Human::turn(Chessboard *component){
             if (result != 0){
                 cout << (colour == 'b' ? "Black" : "White") << " played ";
                 cout << pos1 << " to " << pos2 << endl;
+                if (result == 3){
+                    //Promotion
+                    bool donePromote = false;
+                    string promotePiece;
+                    while (!donePromote){
+                        cout << "Which piece to promote to? ";
+                        string promoteLine;
+                        getline(cin, promoteLine);
+                        istringstream iss(promoteLine);
+                        iss >> promotePiece;
+                        if (promotePiece == "queen"){
+                            component->promote(targetX, targetY, (colour == 'b' ? 'q' : 'Q'));
+                            donePromote = true;
+                        }
+                        else if (promotePiece == "knight"){
+                            component->promote(targetX, targetY, (colour == 'b' ? 'n' : 'N'));
+                            donePromote = true;
+                        }
+                        else if (promotePiece == "rook"){
+                            component->promote(targetX, targetY, (colour == 'b' ? 'r' : 'R'));
+                            donePromote = true;
+                        }
+                        else if (promotePiece == "bishop"){
+                            component->promote(targetX, targetY, (colour == 'b' ? 'b' : 'B'));
+                            donePromote = true;
+                        }
+                        else{
+                            cout << "Invalid promoted piece!\n";
+                        }
+                    }
+                    //Successful promotion
+                    cout << "Promoted to " << promotePiece << endl;
+                }
                 return true;
             }
             else{

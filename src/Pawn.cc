@@ -3,8 +3,7 @@
 #include <iostream>
 using namespace std;
 
-Pawn::Pawn(int row, int col, char name):
-        Piece(row, col, name) {}
+Pawn::Pawn(int row, int col, char name): Piece(row, col, name) {}
 
 //Legal locations include one unit up (or two if row # valid) and diagonal ups
 int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
@@ -14,16 +13,18 @@ int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
         int diffX = x - targetX, diffY = abs(y - targetY);
         if (diffX == 2){
             //If it moves two units up, it must be at initial state
-            //Thus, the original row number must be 6 (in a [0, 7] index)
+            //Thus, the piece must not have been moved
             //Furthermore, diffX must be 0
-            return (x == 6 && diffY == 0);
+            return (!moved && diffY == 0);
         }
         else if (diffX == 1){
             //If it moves one unit up, it's either straight up or diagonal
             //If diffX = 0, then the new position must be unoccupied by any piece
             //If diffX = 1, then the new position must be occupied by enemy piece
             //Note: with the current pawn being white, then enemy piece is lowercase
-            if (diffY == 0) return component->location(targetX, targetY) == NULL;
+            if (diffY == 0){
+                return component->location(targetX, targetY) == NULL;
+            }
             else if (diffY == 1){
                 Piece *targetPiece = component->location(targetX, targetY);
                 if (targetPiece == NULL) return 0;

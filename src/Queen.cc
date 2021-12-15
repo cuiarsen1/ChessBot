@@ -2,11 +2,7 @@
 #include "Queen.h"
 using namespace std;
 
-Queen::Queen(int row, int col, char name):
-        Piece(row, col, name) {
-            if (isupper(name)) colour = 'w';
-            else colour = 'b';
-        }
+Queen::Queen(int row, int col, char name): Piece(row, col, name) {}
 
 //Legal locations include all horizontal/vertical/diagonal moves
 int Queen::checkValidMove(int targetX, int targetY, Chessboard *component){

@@ -87,6 +87,15 @@ Piece *Chessboard::location(int x, int y){
     return NULL;
 }
 
+void Chessboard::promote(int x, int y, char name){
+    //Since this function is only called after a pawn has been moved,
+    //Then (x, y) is guaranteed to be a pawn
+    //First, delete the original pawn at (x, y)
+    removePiece(x, y);
+    //Next, initialize a new piece with the given name
+    newPiece(x, y, name);
+}
+
 int Chessboard::move(int startX, int startY, int targetX, int targetY){
     Piece *start = location(startX, startY);
     if (start == NULL) return 0;
@@ -101,7 +110,16 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
             start->setPiece(startX, startY);
             return 0;
         }
-        return 1;
+        //Otherwise, successful; mark the bool of the piece to show it has moved
+        start->moved = true;
+        //SPECIAL CASE: If the piece is a pawn, check promotion
+        if (dynamic_cast<Pawn*>(start) != NULL){
+            //The piece is a pawn; check column
+            if (start->colour == 'w' && start->x == 0) return 3;
+            if (start->colour == 'b' && start->x == 7) return 3;
+            //Otherwise, the pawn has not reached the opposite side of the board
+        }
+        return 1; //Otherwise, it's a normal pawn move
     }
     if (status == 2){
         //Capture piece at target spot
@@ -124,11 +142,17 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
             //Valid capture; delete old target
             //Stored at the temporary (-1, -1) position
             removePiece(-1, -1);
+            //Since piece has moved, update the boolean
+            start->moved = true;
+            //SPECIAL CASE: If the piece is a pawn, check promotion
+            if (dynamic_cast<Pawn*>(start) != NULL){
+                //The piece is a pawn; check column
+                if (start->colour == 'w' && start->x == 0) return 3;
+                if (start->colour == 'b' && start->x == 7) return 3;
+                //Otherwise, the pawn has not reached the opposite side of the board
+            }
             return 2;
         }
-    }
-    if (status == 3){
-        //Promotion
     }
     return 0;
 }
