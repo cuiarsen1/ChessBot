@@ -9,6 +9,8 @@
 #include "Piece.h"
 using namespace std;
 
+Chessboard::Chessboard(): allowCastling{true}, allowEnPassant{true} {}
+
 void Chessboard::newPiece(int x, int y, char name){
     if (name == 'K') whitePieces.push_back(new King(x, y, name));
     else if (name == 'k') blackPieces.push_back(new King(x, y, name));
@@ -73,7 +75,12 @@ void Chessboard::reset(){
     //Delete every piece on the board
     //Acts as destructor without wiping the Chessboard itself
     for (Piece *p: blackPieces) delete p;
+    blackPieces.clear();
     for (Piece *p: whitePieces) delete p;
+    whitePieces.clear();
+    //Also reset the custom allow castle and en passant booleans
+    allowCastling = true;
+    allowEnPassant = true;
 }
 
 Piece *Chessboard::location(int x, int y){
@@ -155,11 +162,18 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
         }
     }
     if (status == 3){
-        //Castling; we already know the ending state is not checked
-        //Thus, update the location of the king and rook completes the castle
+        //Castling; if the king is checked after castle, it's invalid
+        //Ppdate the location of the king and rook completes the castle
         start->setPiece(targetX, targetY); //King
         Piece *tempRook = location(targetX, (targetY < startY) ? 0 : 7);
         tempRook->setPiece(targetX, (targetY < startY) ? 3 : 5);
+        if (check(start->colour)){
+            //Invalid move, as it gets the king into check
+            //Revert changes
+            tempRook->setPiece(targetX, (targetY < startY) ? 0 : 7);
+            start->setPiece(targetX, 4);
+            return 0;
+        }
         return 4; //3 is occupied by promotion
     }
     if (status == 4){
@@ -437,5 +451,7 @@ bool Chessboard::stalemate(char colour){
 Chessboard::~Chessboard() {
     //Clear all pieces used
     for (Piece *p: blackPieces) delete p;
+    blackPieces.clear();
     for (Piece *p: whitePieces) delete p;
+    whitePieces.clear();
 }

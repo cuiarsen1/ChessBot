@@ -31,6 +31,7 @@ int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
                 Piece *targetPiece = component->location(targetX, targetY);
                 if (targetPiece == NULL){
                     //Check for en passant
+                    if (!component->allowEnPassant) return 0; //Custom mode banned en passant
                     Piece *tempPassant = component->location(x, targetY);
                     if (tempPassant == NULL) return 0; //no pieces there
                     if (tempPassant->enPassant) return 4; //Is en passant
@@ -67,6 +68,7 @@ int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
                 Piece *targetPiece = component->location(targetX, targetY);
                 if (targetPiece == NULL){
                     //Check for en passant
+                    if (!component->allowEnPassant) return 0; //Custom mode banned en passant
                     Piece *tempPassant = component->location(x, targetY);
                     if (tempPassant == NULL) return 0; //no pieces there
                     if (tempPassant->enPassant) return 4; //Is en passant

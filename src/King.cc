@@ -1,6 +1,8 @@
 #include "Chessboard.h"
 #include "King.h"
 #include "Rook.h"
+#include <iostream>
+using namespace std;
 
 King::King(int row, int col, char name): Piece(row, col, name) {}
 
@@ -15,6 +17,8 @@ int King::checkValidMove(int targetX, int targetY, Chessboard *component){
         //Since this condition already assumes diffY = 2
         //(which would've be a valid normal king move),
         //then any conditions from now on that isn't met can return 0 to show invalid
+        //Setup mode banned castling
+        if (!component->allowCastling) return 0;
         //If the piece has been moved, it's invalid
         if (moved) return 0;
         //If current king is in check, it's invalid
@@ -36,10 +40,6 @@ int King::checkValidMove(int targetX, int targetY, Chessboard *component){
             setPiece(colourRow, 3);
             //If the cross is checked, it's invalid
             if (component->check(colour)) return 0;
-            //Try moving the king to target
-            setPiece(colourRow, 2);
-            //If the king is checked after castle, it's invalid
-            if (component->check(colour)) return 0;
             //Move the king back
             setPiece(colourRow, 4);
             return 3; //Otherwise, it's a valid castle
@@ -58,10 +58,6 @@ int King::checkValidMove(int targetX, int targetY, Chessboard *component){
             //Try moving the king one spot right
             setPiece(colourRow, 5);
             //If the cross is checked, it's invalid
-            if (component->check(colour)) return 0;
-            //Try moving the king to target
-            setPiece(colourRow, 6);
-            //If the king is checked after castle, it's invalid
             if (component->check(colour)) return 0;
             //Move the king back
             setPiece(colourRow, 4);

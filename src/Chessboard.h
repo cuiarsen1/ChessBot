@@ -9,8 +9,11 @@ class TextObserver;
 
 class Chessboard: public Subject {
 public:
+   bool allowCastling; //From setup mode
+   bool allowEnPassant; //From setup mode
    std::vector<Piece*> blackPieces;
    std::vector<Piece*> whitePieces;
+   Chessboard();
    void newPiece(int x, int y, char name);
    void init(); //Sets position of the pieces
    void reset(); //Used to clean all the pieces from the board after every match

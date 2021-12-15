@@ -168,6 +168,16 @@ void Game::setup(){
             //However, we should let the user know that the colour is updated
             cout << ((move == 'b') ? "Black" : "White") << " starts!\n";
         }
+        else if (setupCommand == "c"){
+            //Toggle castling allowed
+            component->allowCastling = !component->allowCastling;
+            cout << "Castling " << (component->allowCastling ? "allowed!\n" : "not allowed!\n");
+        }
+        else if (setupCommand == "e"){
+            //Toggle en passant allowed
+            component->allowEnPassant = !component->allowEnPassant;
+            cout << "En passant " << (component->allowEnPassant ? "allowed!\n" : "not allowed!\n");
+        }
         else if (setupCommand == "done"){
             //Exit setup mode
             //Before exiting, verify the chessboard is in a valid setup
@@ -201,7 +211,6 @@ void Game::inGame(){
             cout << "Stalemate!\n";
             blackScore += 0.5;
             whiteScore += 0.5;
-            restart(); //Clear all memory used for current match
             break;
         }
         //Perform call to see if current side is in checkmate
@@ -210,7 +219,6 @@ void Game::inGame(){
             cout << "Checkmate! " << ((move == 'b') ? "White" : "Black") << " wins!\n";
             if (move == 'b') ++whiteScore;
             else ++blackScore;
-            restart(); //Clear all memory used for current match
             break;
         }
         //If current side is in check
@@ -227,6 +235,7 @@ void Game::inGame(){
                 cout << "Black resigns!\n";
                 ++whiteScore;
                 gameOver = true;
+                break;
             }
             //Otherwise, it was a valid move; switch sides for next move
             else move = 'w';
@@ -241,11 +250,13 @@ void Game::inGame(){
                 cout << "White resigns!\n";
                 ++blackScore;
                 gameOver = true;
+                break;
             }
             //Otherwise, it was a valid move; switch sides for next move
             else move = 'b';
         }
     }
+    restart(); //Clear all memory used for current match
 }
 
 void Game::restart(){
@@ -253,7 +264,9 @@ void Game::restart(){
     component->reset();
     //Next, delete the two players
     delete playerB;
+    playerB = NULL;
     delete playerW;
+    playerW = NULL;
     //Reset the booleans "gameOver" and "custom"
     gameOver = false;
     custom = false;
@@ -272,6 +285,6 @@ Game::~Game(){
     delete TO;
     delete GO;
     delete component;
-    delete playerB;
-    delete playerW;
+    if (playerB != NULL) delete playerB;
+    if (playerW != NULL) delete playerW;
 }
