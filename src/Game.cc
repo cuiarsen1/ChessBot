@@ -22,8 +22,9 @@ vector<char> validPieces{'K', 'k', 'Q', 'q', 'R', 'r', 'B', 'b', 'N', 'n', 'P', 
 //For the constructor, with the Chessboard not clearing after every match
 //We must initialize it when the Game runs, thus new Chessboard() is called
 //Furthermore, the observers should start up with the chessboard as well
-Game::Game(): component{new Square}, TO{new TextObserver(component)},
-        playerB{NULL}, playerW{NULL}, gameOver{false}, custom{false}, move{'w'},
+Game::Game(): component{new Square}, TO{new TextObserver(component)}, 
+        GO{new GraphicalObserver(component)}, playerB{NULL}, playerW{NULL}, 
+        gameOver{false}, custom{false}, move{'w'},
         whiteScore{0}, blackScore{0} {}
 
 void Game::interact(){
