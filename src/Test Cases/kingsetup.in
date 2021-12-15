@@ -1,0 +1,16 @@
+setup
++ K b3
++ k b2
+done
+- b2
++ k b4
+done
+- b4
++ k a3
+done
+- a3
++ k c3
+done
+- c3
++ k f1
+done

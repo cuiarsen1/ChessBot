@@ -6,7 +6,7 @@
 4        
 3        
 2        
-1    K   
+1k       
 +abcdefgh
 8        
 7        
@@ -14,8 +14,8 @@
 5        
 4        
 3        
-2        
-1        
+2       R
+1k       
 +abcdefgh
 8        
 7        
@@ -23,30 +23,41 @@
 5        
 4        
 3        
-2        
-1    k   
+2      RR
+1k       
 +abcdefgh
-8        
+8K       
 7        
 6        
 5        
 4        
 3        
-2        
-1    k   
-Invalid setup command!
-Setup is invalid!
-+abcdefgh
-8        
-7        
-6        
-5     K  
-4        
-3        
-2        
-1    k   
-Invalid setup command!
+2      RR
+1k       
+White starts!
 Setup mode is complete!
++abcdefgh
+8K       
+7        
+6        
+5        
+4        
+3        
+2      RR
+1k       
+White's turn!
+White played g2 to g1
++abcdefgh
+8K       
+7        
+6        
+5        
+4        
+3        
+2       R
+1k     R 
+Black's turn!
+Checkmate! White wins!
 Final score:
-White: 0
+White: 1
 Black: 0

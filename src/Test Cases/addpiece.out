@@ -1,22 +1,25 @@
 +abcdefgh
-1        
-2        
+8       K
+7        
+6        
+5        
+4        
 3        
-4        
-5        
-6        
-7        
-8       K
-
-setup mode is invalid
-+abcdefgh
-1        
 2        
-3       k
-4        
-5        
-6        
-7        
+1        
+Invalid setup command!
+Setup is invalid!
++abcdefgh
 8       K
-
-setup mode is complete
+7        
+6        
+5        
+4        
+3       k
+2        
+1        
+Invalid setup command!
+Setup mode is complete!
+Final score:
+White: 0
+Black: 0
