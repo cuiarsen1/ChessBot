@@ -4,6 +4,7 @@
 #include "Piece.h"
 #include <iostream>
 #include <vector>
+#include <set>
 using namespace std;
 
 vector<char> validPromotions{'q', 'n', 'r', 'b'};
@@ -216,7 +217,6 @@ void Computer::level3(Chessboard *component){
     //At the end of the loop, it would be prioritized, as it avoids being captured
     //Essentially, this removes all the plain moves from level 2 that immediately gets captured
     //Furthermore, to increase the difficulty of level 3 more, the captures will get processed as well
-    //Pawn 1, Knight 3, Bishop 3, Rook 5, Queen 9, King 10000 (theoretical)
     //After trying each capture, also check if own piece may be captured (traded)
     //If not at all, it stays a prioritized move
     //Otherwise, if the value of the captured enemy piece > value of own sacrified piece,
@@ -231,11 +231,12 @@ void Computer::level3(Chessboard *component){
             int px = p->x, py = p->y;
             vector<pair<int, int>> pMoves = p->findMoves(component);
             for (auto i: pMoves){
+                //Divide the cases so that moves that lead to check are prioritized
                 //Try making the move
                 p->setPiece(i.first, i.second);
                 //If in check
                 if (component->check('w')){
-                    //Check; put in prioritized vector
+                    //Put in prioritized vector
                     VIPStart.emplace_back(px, py);
                     VIPTarget.emplace_back(i.first, i.second);
                     //Put the piece back
@@ -243,19 +244,64 @@ void Computer::level3(Chessboard *component){
                 }
                 else{
                     //Otherwise, it's a non-prioritized move
-                    //LEVEL3: avoid capture
-                    LOWStart.emplace_back(px, py);
-                    LOWTarget.emplace_back(i.first, i.second);
+                    //Run through all enemy pieces to see if this piece is reachable
+                    bool targetable = false;
+                    for (Piece *enemy: component->whitePieces){
+                        int status = enemy->checkValidMove(i.first, i.second, component);
+                        if (status != 0){
+                            //Reachable; not ideal move
+                            targetable = true;
+                            break;
+                        }
+                    }
+                    if (targetable){
+                        //Low priority move
+                        LOWStart.emplace_back(px, py);
+                        LOWTarget.emplace_back(i.first, i.second);
+                    }
+                    else{
+                        //High priority move
+                        VIPStart.emplace_back(px, py);
+                        VIPTarget.emplace_back(i.first, i.second);
+                    }
                     //Put the piece back
                     p->setPiece(px, py);
                 }
             }
-            //Since the rest are captures, they are already prioritized
-            //Thus no need to divide into check capture or normal capture
+            //Captures next
+            //Run similar check as move above
             vector<pair<int, int>> pCaptures = p->findCaptures(component);
             for (auto i: pCaptures){
-                VIPStart.emplace_back(p->x, p->y);
-                VIPTarget.emplace_back(i.first, i.second);
+                //Try the capture
+                Piece *captured = component->location(i.first, i.second);
+                captured->setPiece(-1, -1);
+                p->setPiece(i.first, i.second);
+                bool targetable = false;
+                //Run through all enemy pieces if the piece can be captured
+                for (Piece *enemy: component->whitePieces){
+                    int status = enemy->checkValidMove(i.first, i.second, component);
+                    if (status != 0){
+                        //Capturable; compare the point values
+                        if (p->value < captured->value){
+                            //The piece captured has a greater score than own piece used
+                            //Not enough for a trade; not prioritized capture
+                            targetable = true;
+                            break;
+                        }
+                    }
+                }
+                if (targetable){
+                    //Not priority
+                    LOWStart.emplace_back(px, py);
+                    LOWTarget.emplace_back(i.first, i.second);
+                }
+                else{
+                    VIPStart.emplace_back(px, py);
+                    VIPTarget.emplace_back(i.first, i.second);
+                }
+                //Put the pieces back
+                p->setPiece(px, py);
+                captured->setPiece(i.first, i.second);
             }
         }
     }
@@ -277,23 +323,92 @@ void Computer::level3(Chessboard *component){
                 }
                 else{
                     //Otherwise, it's a non-prioritized move
-                    LOWStart.emplace_back(px, py);
-                    LOWTarget.emplace_back(i.first, i.second);
+                    //Run through all enemy pieces to see if this piece is reachable
+                    bool targetable = false;
+                    for (Piece *enemy: component->blackPieces){
+                        int status = enemy->checkValidMove(i.first, i.second, component);
+                        if (status != 0){
+                            //Reachable; not ideal move
+                            targetable = true;
+                            break;
+                        }
+                    }
+                    if (targetable){
+                        //Low priority move
+                        LOWStart.emplace_back(px, py);
+                        LOWTarget.emplace_back(i.first, i.second);
+                    }
+                    else{
+                        //High priority move
+                        VIPStart.emplace_back(px, py);
+                        VIPTarget.emplace_back(i.first, i.second);
+                    }
                     //Put the piece back
                     p->setPiece(px, py);
                 }
             }
-            //Since the rest are captures, they are already prioritized
-            //Thus no need to divide into check capture or normal capture
+            //Captures next
+            //Run similar check as move above
             vector<pair<int, int>> pCaptures = p->findCaptures(component);
             for (auto i: pCaptures){
-                VIPStart.emplace_back(p->x, p->y);
-                VIPTarget.emplace_back(i.first, i.second);
+                //Try the capture
+                Piece *captured = component->location(i.first, i.second);
+                captured->setPiece(-1, -1);
+                p->setPiece(i.first, i.second);
+                bool targetable = false;
+                //Run through all enemy pieces if the piece can be captured
+                for (Piece *enemy: component->blackPieces){
+                    int status = enemy->checkValidMove(i.first, i.second, component);
+                    if (status != 0){
+                        //Capturable; compare the point values
+                        if (p->value < captured->value){
+                            //The piece captured has a greater score than own piece used
+                            //Not enough for a trade; not prioritized capture
+                            targetable = true;
+                            break;
+                        }
+                    }
+                }
+                if (targetable){
+                    //Not priority
+                    LOWStart.emplace_back(px, py);
+                    LOWTarget.emplace_back(i.first, i.second);
+                }
+                else{
+                    VIPStart.emplace_back(px, py);
+                    VIPTarget.emplace_back(i.first, i.second);
+                }
+                //Put the pieces back
+                p->setPiece(px, py);
+                captured->setPiece(i.first, i.second);
             }
         }
     }
-    if (!VIPTarget.size()){
-        //There are no captures/checks available at the moment
+    if (VIPTarget.size() != 0){
+        //Only choose from the prioritized moves/captures
+        //Next, generate a random index for the computer's decision
+        int index = rand() % int(VIPTarget.size());
+        //Make the move
+        int startX = VIPStart[index].first;
+        int startY = VIPStart[index].second;
+        int targetX = VIPTarget[index].first;
+        int targetY = VIPTarget[index].second;
+        int status = component->move(startX, startY, targetX, targetY);
+        //Output the move
+        cout << (colour == 'b' ? "Black" : "White") << " played ";
+        cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
+        //Check promotion
+        if (status == 3){
+            //Always choose queen for promotion
+            char tempPromotion = 'q';
+            //Set it to correct colour
+            if (colour == 'w') tempPromotion = toupper(tempPromotion);
+            component->promote(targetX, targetY, tempPromotion);
+            cout << "Promoted to queen\n";
+        }
+    }
+    else{
+        //There are no prioritized moves available at the moment
         //Thus, choose from the non-prioritized moves
         //Next, generate a random index for the computer's decision
         int index = rand() % int(LOWTarget.size());
@@ -302,24 +417,19 @@ void Computer::level3(Chessboard *component){
         int startY = LOWStart[index].second;
         int targetX = LOWTarget[index].first;
         int targetY = LOWTarget[index].second;
-        component->move(startX, startY, targetX, targetY);
+        int status = component->move(startX, startY, targetX, targetY);
         //Output the move
         cout << (colour == 'b' ? "Black" : "White") << " played ";
         cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
-    }
-    else{
-        //Otherwise, only choose from the prioritized moves/captures
-        //Next, generate a random index for the computer's decision
-        int index = rand() % int(VIPTarget.size());
-        //Make the move
-        int startX = VIPStart[index].first;
-        int startY = VIPStart[index].second;
-        int targetX = VIPTarget[index].first;
-        int targetY = VIPTarget[index].second;
-        component->move(startX, startY, targetX, targetY);
-        //Output the move
-        cout << (colour == 'b' ? "Black" : "White") << " played ";
-        cout << char('a'+startY) << 8-startX << " to " << char('a'+targetY) << 8-targetX << endl;
+        //Check promotion
+        if (status == 3){
+            //Always choose queen for promotion
+            char tempPromotion = 'q';
+            //Set it to correct colour
+            if (colour == 'w') tempPromotion = toupper(tempPromotion);
+            component->promote(targetX, targetY, tempPromotion);
+            cout << "Promoted to queen\n";
+        }
     }
 }
 
