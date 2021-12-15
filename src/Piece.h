@@ -12,6 +12,7 @@ public:
     //To check if a piece has been moved;
     //This is used for pawn's first move, castling and en passant
     bool moved;
+    bool enPassant; //For tracking if enPassant can be performed on this Pawn (by enemy)
     Piece(int x, int y, char name);
     void setPiece(int x, int y);
     std::vector<std::pair<int, int>> findMoves(Chessboard *component);

@@ -15,6 +15,8 @@ int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
             //If it moves two units up, it must be at initial state
             //Thus, the piece must not have been moved
             //Furthermore, diffX must be 0
+            //NOTE: as it moves two up, it is available for en passant (for one round only)
+            enPassant = true;
             return (!moved && diffY == 0);
         }
         else if (diffX == 1){
@@ -27,7 +29,14 @@ int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
             }
             else if (diffY == 1){
                 Piece *targetPiece = component->location(targetX, targetY);
-                if (targetPiece == NULL) return 0;
+                if (targetPiece == NULL){
+                    //Check for en passant
+                    Piece *tempPassant = component->location(x, targetY);
+                    if (tempPassant == NULL) return 0; //no pieces there
+                    if (tempPassant->enPassant) return 4; //Is en passant
+                    //Otherwise, it's an invalid move
+                    return 0;
+                }
                 if (islower(targetPiece->name)) return 2;
                 //Check: en passant
                 //Check: promotion
@@ -43,6 +52,8 @@ int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
             //If it moves two units down, it must be at initial state
             //Thus, the original row number must be 1 (in a [0, 7] index)
             //Furthermore, diffX must be 0
+            //NOTE: as it moves two down, it is available for en passant (for one round only)
+            enPassant = true;
             return (x == 1 && diffY == 0);
         }
         else if (diffX == 1){
@@ -54,7 +65,14 @@ int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
             if (diffY == 0) return component->location(targetX, targetY) == NULL;
             else if (diffY == 1){
                 Piece *targetPiece = component->location(targetX, targetY);
-                if (targetPiece == NULL) return 0;
+                if (targetPiece == NULL){
+                    //Check for en passant
+                    Piece *tempPassant = component->location(x, targetY);
+                    if (tempPassant == NULL) return 0; //no pieces there
+                    if (tempPassant->enPassant) return 4; //Is en passant
+                    //Otherwise, it's an invalid move
+                    return 0;
+                }
                 if (isupper(targetPiece->name)) return 2;
                 //Check: en passant
                 return 0; //Otherwise, the target is invalid

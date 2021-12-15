@@ -162,6 +162,29 @@ int Chessboard::move(int startX, int startY, int targetX, int targetY){
         tempRook->setPiece(targetX, (targetY < startY) ? 3 : 5);
         return 4; //3 is occupied by promotion
     }
+    if (status == 4){
+        //en passant; still need to check that move doesn't get check
+        Piece *oldTarget = location(startX, targetY); //NOTE startX for en passant
+        oldTarget->setPiece(-1, -1); //Move old target off the chessboard
+        start->setPiece(targetX, targetY);
+        //Make sure new move doesn't get our king into check
+        if (check(start->colour)){
+            //Revert changes
+            start->setPiece(startX, startY);
+            oldTarget->setPiece(startX, targetY);
+            return 0;
+        }
+        else{
+            //Valid en passant; delete old target
+            //Stored at the temporary (-1, -1) position
+            removePiece(-1, -1);
+            //Since piece has moved, update the boolean
+            start->moved = true;
+            //We know it's impossible for en passant to lead directly to promotion,
+            //thus no need to check for promotion case
+            return 5; //4 is occupied by castling
+        }
+    }
     return 0;
 }
 

@@ -3,7 +3,7 @@
 using namespace std;
 
 Piece::Piece(int x, int y, char name):
-        x{x}, y{y}, name{name}, moved{false} {
+        x{x}, y{y}, name{name}, moved{false}, enPassant{false} {
             colour = isupper(name) ? 'w' : 'b';
             char temp = tolower(name);
             if (temp == 'k') value = 10000;

@@ -5,6 +5,7 @@
 #include "Square.h"
 #include "Human.h"
 #include "Computer.h"
+#include "Piece.h"
 using namespace std;
 
 //Vectors for testing
@@ -215,6 +216,9 @@ void Game::inGame(){
             cout << ((move == 'b') ? "Black" : "White") << " is in check!\n";
         }
         if (move == 'b'){
+            //We first clear all available black en passants from last black round,
+            //as the opponent has missed the time to perform en passant
+            for (Piece *p: component->blackPieces) p->enPassant = false;
             bool result = playerB->turn(component);
             if (!result){
                 //Resignation
@@ -226,6 +230,9 @@ void Game::inGame(){
             else move = 'w';
         }
         else{
+            //We first clear all available black en passants from last white round,
+            //as the opponent has missed the time to perform en passant
+            for (Piece *p: component->whitePieces) p->enPassant = false;
             bool result = playerW->turn(component);
             if (!result){
                 //Resignation
@@ -261,6 +268,7 @@ void Game::score(){
 Game::~Game(){
     //Delete the observers, chessboard and the two players
     delete TO;
+    delete GO;
     delete component;
     delete playerB;
     delete playerW;
