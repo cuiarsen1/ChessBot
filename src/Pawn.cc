@@ -17,7 +17,7 @@ int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
             //Furthermore, diffX must be 0
             //NOTE: as it moves two up, it is available for en passant (for one round only)
             enPassant = true;
-            return (!moved && diffY == 0);
+            return (!moved && x == 6 && diffY == 0);
         }
         else if (diffX == 1){
             //If it moves one unit up, it's either straight up or diagonal
@@ -55,7 +55,7 @@ int Pawn::checkValidMove(int targetX, int targetY, Chessboard *component){
             //Furthermore, diffX must be 0
             //NOTE: as it moves two down, it is available for en passant (for one round only)
             enPassant = true;
-            return (x == 1 && diffY == 0);
+            return (!moved && x == 1 && diffY == 0);
         }
         else if (diffX == 1){
             //If it moves one unit down, it's either straight down or diagonal
