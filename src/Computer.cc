@@ -57,6 +57,15 @@ void Computer::level1(Chessboard *component){
     //Then choose a random move to execute
     vector<pair<int, int>> start;
     vector<pair<int, int>> target;
+    //Choose a random piece for promotion
+    char tempPromotion = validPromotions[rand() % 4];
+    cout << "Promoted to ";
+    if (tempPromotion == 'q') cout << "queen\n";
+    else if (tempPromotion == 'n') cout << "knight\n";
+    else if (tempPromotion == 'r') cout << "rook\n";
+    else cout << "bishop\n";
+    //Set it to correct colour
+    if (colour == 'w') tempPromotion = toupper(tempPromotion);
     if (colour == 'b'){
         for (Piece *p: component->blackPieces){
             vector<pair<int, int>> pMoves = p->findMoves(component);
@@ -75,12 +84,18 @@ void Computer::level1(Chessboard *component){
         for (Piece *p: component->whitePieces){
             vector<pair<int, int>> pMoves = p->findMoves(component);
             for (auto i: pMoves){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 //Store into the starts and targets
                 start.emplace_back(p->x, p->y);
                 target.emplace_back(i.first, i.second);
             }
             vector<pair<int, int>> pCaptures = p->findCaptures(component);
             for (auto i: pCaptures){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 start.emplace_back(p->x, p->y);
                 target.emplace_back(i.first, i.second);
             }
@@ -93,15 +108,6 @@ void Computer::level1(Chessboard *component){
     int startY = start[index].second;
     int targetX = target[index].first;
     int targetY = target[index].second;
-    //Choose a random piece for promotion
-    char tempPromotion = validPromotions[rand() % 4];
-    cout << "Promoted to ";
-    if (tempPromotion == 'q') cout << "queen\n";
-    else if (tempPromotion == 'n') cout << "knight\n";
-    else if (tempPromotion == 'r') cout << "rook\n";
-    else cout << "bishop\n";
-    //Set it to correct colour
-    if (colour == 'w') tempPromotion = toupper(tempPromotion);
     int status = component->move(startX, startY, targetX, targetY, tempPromotion);
     //Output the move
     cout << ((colour == 'b') ? "Black" : "White") << " played ";
@@ -125,11 +131,18 @@ void Computer::level2(Chessboard *component){
     vector<pair<int, int>> VIPTarget;
     vector<pair<int, int>> LOWStart;
     vector<pair<int, int>> LOWTarget;
+    //Always choose queen for promotion
+    char tempPromotion = 'q';
+    //Set it to correct colour
+    if (colour == 'w') tempPromotion = toupper(tempPromotion);
     if (colour == 'b'){
         for (Piece *p: component->blackPieces){
             int px = p->x, py = p->y;
             vector<pair<int, int>> pMoves = p->findMoves(component);
             for (auto i: pMoves){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 //Divide the cases so that moves that lead to check are prioritized
                 //Try making the move
                 p->setPiece(i.first, i.second);
@@ -153,6 +166,9 @@ void Computer::level2(Chessboard *component){
             //Thus no need to divide into check capture or normal capture
             vector<pair<int, int>> pCaptures = p->findCaptures(component);
             for (auto i: pCaptures){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 VIPStart.emplace_back(p->x, p->y);
                 VIPTarget.emplace_back(i.first, i.second);
             }
@@ -163,6 +179,9 @@ void Computer::level2(Chessboard *component){
             int px = p->x, py = p->y;
             vector<pair<int, int>> pMoves = p->findMoves(component);
             for (auto i: pMoves){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 //Divide the cases so that moves that lead to check are prioritized
                 //Try making the move
                 p->setPiece(i.first, i.second);
@@ -186,6 +205,9 @@ void Computer::level2(Chessboard *component){
             //Thus no need to divide into check capture or normal capture
             vector<pair<int, int>> pCaptures = p->findCaptures(component);
             for (auto i: pCaptures){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 VIPStart.emplace_back(p->x, p->y);
                 VIPTarget.emplace_back(i.first, i.second);
             }
@@ -201,10 +223,6 @@ void Computer::level2(Chessboard *component){
         int startY = LOWStart[index].second;
         int targetX = LOWTarget[index].first;
         int targetY = LOWTarget[index].second;
-        //Always choose queen for promotion
-        char tempPromotion = 'q';
-        //Set it to correct colour
-        if (colour == 'w') tempPromotion = toupper(tempPromotion);
         int status = component->move(startX, startY, targetX, targetY, tempPromotion);
         //Output the move
         cout << ((colour == 'b') ? "Black" : "White") << " played ";
@@ -256,11 +274,18 @@ void Computer::level3(Chessboard *component){
     vector<pair<int, int>> VIPTarget;
     vector<pair<int, int>> LOWStart;
     vector<pair<int, int>> LOWTarget;
+    //Always choose queen for promotion
+    char tempPromotion = 'q';
+    //Set it to correct colour
+    if (colour == 'w') tempPromotion = toupper(tempPromotion);
     if (colour == 'b'){
         for (Piece *p: component->blackPieces){
             int px = p->x, py = p->y;
             vector<pair<int, int>> pMoves = p->findMoves(component);
             for (auto i: pMoves){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 //Divide the cases so that moves that lead to check are prioritized
                 //Try making the move
                 p->setPiece(i.first, i.second);
@@ -302,6 +327,9 @@ void Computer::level3(Chessboard *component){
             //Run similar check as move above
             vector<pair<int, int>> pCaptures = p->findCaptures(component);
             for (auto i: pCaptures){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 //Try the capture
                 Piece *captured = component->location(i.first, i.second);
                 captured->setPiece(-1, -1);
@@ -340,6 +368,9 @@ void Computer::level3(Chessboard *component){
             int px = p->x, py = p->y;
             vector<pair<int, int>> pMoves = p->findMoves(component);
             for (auto i: pMoves){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 //Divide the cases so that moves that lead to check are prioritized
                 //Try making the move
                 p->setPiece(i.first, i.second);
@@ -381,6 +412,9 @@ void Computer::level3(Chessboard *component){
             //Run similar check as move above
             vector<pair<int, int>> pCaptures = p->findCaptures(component);
             for (auto i: pCaptures){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 //Try the capture
                 Piece *captured = component->location(i.first, i.second);
                 captured->setPiece(-1, -1);
@@ -423,10 +457,6 @@ void Computer::level3(Chessboard *component){
         int startY = VIPStart[index].second;
         int targetX = VIPTarget[index].first;
         int targetY = VIPTarget[index].second;
-        //Always choose queen for promotion
-        char tempPromotion = 'q';
-        //Set it to correct colour
-        if (colour == 'w') tempPromotion = toupper(tempPromotion);
         int status = component->move(startX, startY, targetX, targetY, tempPromotion);
         //Output the move
         cout << ((colour == 'b') ? "Black" : "White") << " played ";
@@ -473,12 +503,19 @@ void Computer::level4(Chessboard *component){
     vector<pair<int, int>> start;
     vector<pair<int, int>> target;
     vector<int> score;
+    //Always choose queen for promotion
+    char tempPromotion = 'q';
+    //Set it to correct colour
+    if (colour == 'w') tempPromotion = toupper(tempPromotion);
     if (colour == 'b'){
         //Loop through all moves
         for (Piece *p: component->blackPieces){
             int px = p->x, py = p->y;
             vector<pair<int, int>> pMoves = p->findMoves(component);
             for (auto i: pMoves){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 //Perform the move onto the unoccupied spot
                 p->setPiece(i.first, i.second);
                 //Next, calculate score
@@ -504,6 +541,9 @@ void Computer::level4(Chessboard *component){
             //Next, the captures
             vector<pair<int, int>> pCaptures = p->findCaptures(component);
             for (auto i: pCaptures){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 //Try the capture
                 Piece *captured = component->location(i.first, i.second);
                 captured->setPiece(-1, -1);
@@ -538,6 +578,9 @@ void Computer::level4(Chessboard *component){
             int px = p->x, py = p->y;
             vector<pair<int, int>> pMoves = p->findMoves(component);
             for (auto i: pMoves){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 //Perform the move onto the unoccupied spot
                 p->setPiece(i.first, i.second);
                 //Next, calculate score
@@ -562,6 +605,9 @@ void Computer::level4(Chessboard *component){
             //Next, the captures
             vector<pair<int, int>> pCaptures = p->findCaptures(component);
             for (auto i: pCaptures){
+                //Verify the move works and doesn't check king into check
+                int tempStatus = component->move(p->x, p->y, i.first, i.second, tempPromotion);
+                if (!tempStatus) continue;
                 //Try the capture
                 Piece *captured = component->location(i.first, i.second);
                 captured->setPiece(-1, -1);
@@ -605,10 +651,6 @@ void Computer::level4(Chessboard *component){
     int startY = start[minIndices[index]].second;
     int targetX = target[minIndices[index]].first;
     int targetY = target[minIndices[index]].second;
-    //Always choose queen for promotion
-    char tempPromotion = 'q';
-    //Set it to correct colour
-    if (colour == 'w') tempPromotion = toupper(tempPromotion);
     int status = component->move(startX, startY, targetX, targetY, tempPromotion);
     //Output the move
     cout << ((colour == 'b') ? "Black" : "White") << " played ";
