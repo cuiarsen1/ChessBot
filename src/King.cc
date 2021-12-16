@@ -39,7 +39,11 @@ int King::checkValidMove(int targetX, int targetY, Chessboard *component){
             //Try moving the king one spot left
             setPiece(colourRow, 3);
             //If the cross is checked, it's invalid
-            if (component->check(colour)) return 0;
+            if (component->check(colour)){
+                //Move the king back
+                setPiece(colourRow, 4);
+                return 0;
+            }
             //Move the king back
             setPiece(colourRow, 4);
             return 3; //Otherwise, it's a valid castle
@@ -58,7 +62,11 @@ int King::checkValidMove(int targetX, int targetY, Chessboard *component){
             //Try moving the king one spot right
             setPiece(colourRow, 5);
             //If the cross is checked, it's invalid
-            if (component->check(colour)) return 0;
+            if (component->check(colour)){
+                //Move the king back
+                setPiece(colourRow, 4);
+                return 0;
+            }
             //Move the king back
             setPiece(colourRow, 4);
             return 3; //Otherwise, it's a valid castle
